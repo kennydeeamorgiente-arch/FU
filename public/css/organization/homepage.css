@@ -1,0 +1,747 @@
+
+.cards-and-activity {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 25px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 30px auto;
+}
+
+.log-activity{
+  color: white;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;
+  padding: 25px 30px;
+  min-height: 180px;
+  height: auto;
+  border-radius: 8px;
+  background-color: #8B0000;
+  justify-content: space-between;
+  transition: background-color 0.3s ease;
+}
+.left{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  padding-right: 20px;
+}
+
+.left h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: white;
+}
+
+.left h5 {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+
+.right{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  flex: 1.5;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.right button{
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.right button:hover{
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.track-events{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  width: 55vw;
+  padding: 20px;
+  min-height: 50vh;
+  border-radius: 10px;
+  box-shadow: 0px 6px 44px -5px rgba(0,0,0,0.37);
+}
+.track-events h3{
+  text-align: left;
+  align-self: start;
+  margin-bottom: 15px;
+}
+.track-events table{
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  width: 100%;
+}
+.track-events table th, .track-events table td{
+  padding: 10px;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+.track-events tr:nth-child(even){
+  background-color: #FAFAFA;
+}
+
+
+.event-table{
+  width: 48%;
+  min-height: 50vh;
+  border-radius: 10px;
+  background-color: #fafafa;
+  overflow: hidden;
+  border: 1px solid #6d6d6d;
+}
+
+.table-header{
+  background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
+  color: #fafafa;
+  padding: 20px 30px;
+  border-radius: 12px 12px 0px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.table-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+}
+
+.table-header h3 {
+  margin: 0;
+  font-size: 1.3em;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.table-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.table-filter.date-filter {
+  gap: 12px;
+}
+
+.table-filter.date-filter .date-filter-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+.table-filter.date-filter .date-filter-input-wrap {
+  position: relative;
+  width: min(360px, 100%);
+}
+
+.table-filter.date-filter .date-filter-input-wrap > i {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8b0000;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.table-filter.date-filter .date-filter-input-wrap::after {
+  content: "\f078";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8b0000;
+  font-size: 0.78rem;
+  pointer-events: none;
+}
+
+.table-filter button {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.table-filter button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.event-org-table{
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid #E0E0E0;
+  background-color: #fafafa;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+}
+
+.event-org-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.event-org-table table thead {
+  background-color: transparent;
+  color: #333;
+}
+
+.event-org-table table thead th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-org-table table tbody td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.event-org-table table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+#myEventTable tbody tr {
+  cursor: default;
+  transition: background-color 0.2s ease;
+}
+
+#myEventTable tbody tr:hover {
+  background-color: #fff6f6;
+}
+
+#myEventTable tbody tr:hover td {
+  color: #333;
+}
+
+#myEventTable tbody tr:hover .action-btn,
+#myEventTable tbody tr:hover .action-btn i {
+  color: #666;
+}
+
+#myEventTable tbody tr .action-btn:hover {
+  background-color: white;
+  color: #A52A2A;
+  cursor: pointer;
+}
+
+#myEventTable tbody tr .action-btn:hover i {
+  color: #A52A2A;
+}
+
+#myEventTable tbody tr:hover .action-btn:hover {
+  background-color: white;
+  color: #A52A2A;
+}
+
+#myEventTable tbody tr:hover .action-btn:hover i {
+  color: #A52A2A;
+}
+
+#org-leaderboard-table_wrapper {
+  padding: 20px;
+}
+#myEventTable_wrapper{
+  padding: 20px;
+}
+/* Date Range Picker Input */
+.table-filter.date-filter #demo {
+  padding: 10px 34px 10px 38px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1px solid rgba(139, 0, 0, 0.45);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.98);
+  color: #2f2f2f;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.table-filter.date-filter #demo::placeholder {
+  color: #7a7a7a;
+  font-weight: 500;
+  opacity: 1;
+}
+
+.table-filter.date-filter #demo:focus {
+  outline: none;
+  border-color: #8B0000;
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.table-filter.date-filter #demo[readonly] {
+  caret-color: transparent;
+}
+
+/* Date Range Picker Container */
+.daterangepicker {
+  border: 2px solid #A52A2A !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
+}
+
+/* Calendar Header */
+.daterangepicker .calendar-table th {
+  color: #A52A2A;
+  font-weight: bold;
+}
+
+/* Calendar Navigation Buttons */
+.daterangepicker .prev,
+.daterangepicker .next {
+  color: #A52A2A !important;
+}
+
+.daterangepicker .prev:hover,
+.daterangepicker .next:hover {
+  background-color: #A52A2A !important;
+  color: white !important;
+  border-radius: 4px;
+}
+
+/* Month/Year Selectors */
+.daterangepicker .monthselect,
+.daterangepicker .yearselect {
+  color: #A52A2A;
+  font-weight: bold;
+}
+
+.daterangepicker .monthselect:hover,
+.daterangepicker .yearselect:hover {
+  background-color: #A52A2A !important;
+  color: white !important;
+  border-radius: 4px;
+}
+
+/* Calendar Days */
+.daterangepicker td.available:hover {
+  background-color: #f0f0f0 !important;
+  color: #A52A2A !important;
+  border-radius: 4px;
+}
+
+/* Active/Selected Date */
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+  background-color: #A52A2A !important;
+  color: white !important;
+  border-radius: 4px !important;
+}
+
+/* Date Range (in-range dates) */
+.daterangepicker td.in-range {
+  background-color: rgba(165, 42, 42, 0.1) !important;
+  color: #A52A2A !important;
+}
+
+.daterangepicker td.in-range:hover {
+  background-color: rgba(165, 42, 42, 0.2) !important;
+}
+
+/* Start and End Dates */
+.daterangepicker td.start-date,
+.daterangepicker td.end-date {
+  background-color: #A52A2A !important;
+  color: white !important;
+  border-radius: 4px !important;
+}
+
+/* Predefined Ranges */
+.daterangepicker .ranges li {
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.daterangepicker .ranges {
+  padding: 10px;
+}
+
+.daterangepicker .ranges li:hover {
+  background-color: #A52A2A !important;
+  color: white !important;
+}
+
+.daterangepicker .ranges li.active {
+  background-color: #A52A2A !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Apply and Cancel Buttons */
+.daterangepicker .drp-buttons .btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.daterangepicker .drp-buttons .btn.applyBtn {
+  background-color: #A52A2A !important;
+  color: white !important;
+  margin-left: 5px;
+  padding: 10px 24px !important;
+}
+
+.daterangepicker .drp-buttons .btn.applyBtn:hover {
+  background-color: #8B0000 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(165, 42, 42, 0.3);
+}
+
+.daterangepicker .drp-buttons .btn.cancelBtn {
+  background-color: #f0f0f0 !important;
+  color: #333 !important;
+  padding: 10px 24px !important;
+}
+
+.daterangepicker .drp-buttons .btn.cancelBtn:hover {
+  background-color: #e0e0e0 !important;
+}
+
+/* Calendar Table Styling */
+.daterangepicker .calendar-table {
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.daterangepicker .calendar-table td,
+.daterangepicker .calendar-table th {
+  padding: 8px;
+  text-align: center;
+}
+
+/* Today's Date */
+.daterangepicker td.today {
+  border: 1px solid #A52A2A !important;
+  border-radius: 4px;
+}
+
+.daterangepicker td.today:not(.active) {
+  background-color: transparent !important;
+  color: #A52A2A !important;
+  font-weight: bold;
+}
+/* Pagination - Active/Current State */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled),
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled) * {
+    background-color: #A52A2A !important;
+    border: 1px solid #A52A2A !important;
+    border-radius: 4px !important;
+    color: white !important;
+}
+
+/* Pagination - Hover State */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
+    background-color: #A52A2A !important;
+    border: 1px solid #A52A2A !important;
+    border-radius: 4px !important;
+    color: white !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) * {
+    color: white !important;
+}
+
+/* Pagination - Current Button Hover */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover:not(.disabled),
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover:not(.disabled) * {
+    background-color: #A52A2A !important;
+    border: 1px solid #A52A2A !important;
+    border-radius: 4px !important;
+    color: white !important;
+}
+
+.dataTables_length{
+  margin-bottom: 25px;
+}
+
+/* DataTables Length and Filter Styling */
+.dataTables_wrapper .dataTables_length select {
+  padding: 5px 10px;
+  border: 1px solid #A52A2A;
+  border-radius: 4px;
+  margin: 0 5px;
+}
+
+.dataTables_wrapper .dataTables_length select:focus {
+  outline: none;
+  border-color: #8B0000;
+  box-shadow: 0 0 5px rgba(165, 42, 42, 0.3);
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  padding: 5px 10px;
+  border: 1px solid #A52A2A;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+  outline: none;
+  border-color: #8B0000;
+  box-shadow: 0 0 5px rgba(165, 42, 42, 0.3);
+}
+
+#myEventTable .event-row:hover{
+  background-color: #fff6f6;
+  color: inherit;
+}
+
+#myEventTable .event-row:hover .action-btn,
+#myEventTable .event-row:hover .action-btn i {
+  color: #666;
+}
+
+#myEventTable .event-row .action-btn:hover {
+  background-color: white;
+  color: #A52A2A;
+  cursor: pointer;
+}
+
+#myEventTable .event-row .action-btn:hover i {
+  color: #A52A2A;
+}
+
+/* ===== Organization modern page wrappers ===== */
+.org-page-title-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  border: 1px solid #d9dde3;
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+  margin: 0 auto;
+}
+
+.org-page-title-content h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.org-page-title-content p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.org-page-meta {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.org-page-overview-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  border: 1px solid #d9dde3;
+  border-radius: 16px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+  padding: 18px;
+}
+
+.org-page-overview-card .cards-and-activity {
+  margin: 0;
+  max-width: none;
+}
+
+.org-page-overview-card .cards {
+  align-items: stretch;
+}
+
+.org-page-overview-card .card {
+  min-height: 180px;
+}
+
+.org-page-table-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  border: 1px solid #d9dde3;
+  border-radius: 16px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+
+.org-page-table-card .event-org-table {
+  max-width: none;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.org-page-table-card .table-header {
+  background: #ffffff;
+  color: #0f172a;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.org-page-table-card .table-header::before {
+  display: none;
+}
+
+.org-page-table-card .table-header h3 {
+  color: #0f172a;
+  font-size: 1.12rem;
+  text-shadow: none;
+  letter-spacing: 0;
+}
+
+.org-page-table-card .table-filter.date-filter .date-filter-label {
+  color: #475569;
+}
+
+.org-page-table-card .table-filter.date-filter .date-filter-input-wrap > i,
+.org-page-table-card .table-filter.date-filter .date-filter-input-wrap::after {
+  color: #64748b;
+}
+
+.org-page-table-card .table-filter.date-filter #demo {
+  border: 1px solid #c8d1dd;
+  box-shadow: none;
+  color: #0f172a;
+}
+
+.org-page-table-card .table-filter.date-filter #demo:focus {
+  border-color: #8b0000;
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.12);
+  transform: none;
+}
+
+.org-page-table-card .leaderboard-filter-select {
+  border: 1px solid #c8d1dd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background: #fff;
+}
+
+.org-page-table-card .leaderboard-filter-select:focus {
+  outline: none;
+  border-color: #8b0000;
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.12);
+}
+
+.org-page-table-card #myEventTable_wrapper,
+.org-page-table-card #org-leaderboard-table_wrapper {
+  padding: 12px 14px;
+}
+
+.org-page-table-card .dataTables_wrapper .dataTables_paginate .paginate_button {
+  border: 1px solid #d0d7e2 !important;
+  border-radius: 8px !important;
+  padding: 0.3em 0.7em !important;
+  background: #fff !important;
+  color: #334155 !important;
+  margin-left: 6px;
+}
+
+.org-page-table-card .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.org-page-table-card .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: #8b0000 !important;
+  color: #fff !important;
+  border-color: #8b0000 !important;
+}
+
+.org-page-table-card .dataTables_wrapper .dataTables_length select,
+.org-page-table-card .dataTables_wrapper .dataTables_filter input {
+  border: 1px solid #c8d1dd;
+  border-radius: 8px;
+  padding: 6px 9px;
+  color: #0f172a;
+}
+
+@media (max-width: 768px) {
+  .org-page-title-content h1 {
+    font-size: 1.55rem;
+  }
+
+  .org-page-table-card .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+

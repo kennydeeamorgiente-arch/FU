@@ -1,0 +1,88 @@
+
+#users-tbody tr {
+    background-color: #ffffff;
+    border-bottom: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#users-tbody tr:hover {
+    background-color: #fff6f6;
+    color: #333;
+    cursor: pointer;
+}
+
+#users-tbody tr:hover td {
+    color: #333;
+}
+
+#users-table th {
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.85rem;
+    border-bottom: none;
+    white-space: nowrap;
+    position: relative;
+    overflow: visible;
+    text-overflow: ellipsis;
+}
+
+#users-table td {
+    padding: 15px 12px;
+    font-size: 0.9rem;
+    color: #333;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.actions-holder {
+    display: flex;
+    justify-content: center;
+}
+
+.user-email {
+    font-weight: 600;
+    color: #8B0000;
+}
+
+/* Action Buttons */
+.action-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: 4px;
+}
+
+/* Make icons white when row is hovered */
+#users-tbody tr:hover .action-btn {
+    color: #666;
+}
+
+#users-tbody tr:hover .action-btn i {
+    color: #666;
+}
+
+.action-btn:hover {
+    background-color: #fff;
+}
+
+.action-btn:hover i {
+    color: #8b0000;
+}
+
+/* Override row hover when button is hovered - icon should be maroon */
+#users-tbody tr:hover .action-btn:hover i {
+    color: #8b0000;
+}

@@ -1,0 +1,159 @@
+/* Final consistency layer: spacing/alignment only (no logic/behavior changes) */
+
+#content-wrapper.container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 24px 24px 30px;
+  row-gap: 16px;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: calc(100vh - 68px);
+  box-sizing: border-box;
+}
+
+#content-wrapper.container > * {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Shared page blocks */
+#content-wrapper.container .admin-page-title-card,
+#content-wrapper.container .admin-page-toolbar-card,
+#content-wrapper.container .admin-page-table-card,
+#content-wrapper.container .org-page-title-card,
+#content-wrapper.container .org-page-overview-card,
+#content-wrapper.container .org-page-table-card,
+#content-wrapper.container .org-page-form-card,
+#content-wrapper.container .leaderboard-header-section,
+#content-wrapper.container .profile-header-cards {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Dashboard and leaderboard visual rhythm */
+#content-wrapper.container .admin-dashboard-bento {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  row-gap: 14px;
+  align-items: stretch;
+}
+
+#content-wrapper.container .admin-dashboard-bento .bento-grid {
+  width: 100%;
+}
+
+#content-wrapper.container .leaderboard-header-section {
+  margin-bottom: 0;
+}
+
+/* Header strip consistency in table cards */
+#content-wrapper.container .admin-page-table-card .table-header,
+#content-wrapper.container .org-page-table-card .table-header {
+  min-height: 58px;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+#content-wrapper.container .admin-page-table-card .table-header h3,
+#content-wrapper.container .org-page-table-card .table-header h3 {
+  line-height: 1.25;
+}
+
+/* DataTables spacing consistency */
+#content-wrapper.container .admin-page-table-card .dataTables_wrapper,
+#content-wrapper.container .org-page-table-card .dataTables_wrapper {
+  padding: 12px 14px 14px;
+}
+
+#content-wrapper.container .dataTables_wrapper .dataTables_length,
+#content-wrapper.container .dataTables_wrapper .dataTables_filter,
+#content-wrapper.container .dataTables_wrapper .dataTables_info,
+#content-wrapper.container .dataTables_wrapper .dataTables_paginate {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+#content-wrapper.container .org-page-form-card .proposal-form,
+#content-wrapper.container .org-page-form-card .log-event-form {
+  width: 100%;
+  max-width: none;
+}
+
+@media (max-width: 1200px) {
+  #content-wrapper.container {
+    padding: 20px 18px 24px;
+  }
+}
+
+@media (max-width: 992px) {
+  #content-wrapper.container {
+    padding: 18px 14px 22px;
+    row-gap: 14px;
+  }
+
+  #content-wrapper.container .admin-page-title-content h1,
+  #content-wrapper.container .org-page-title-content h1 {
+    font-size: 1.55rem;
+  }
+
+  #content-wrapper.container .admin-toolbar-grid,
+  #content-wrapper.container .admin-leaderboard-toolbar-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  #content-wrapper.container {
+    padding: 14px 12px 18px;
+    row-gap: 12px;
+  }
+
+  #content-wrapper.container .admin-page-title-card,
+  #content-wrapper.container .admin-page-toolbar-card,
+  #content-wrapper.container .admin-page-table-card,
+  #content-wrapper.container .org-page-title-card,
+  #content-wrapper.container .org-page-overview-card,
+  #content-wrapper.container .org-page-table-card,
+  #content-wrapper.container .org-page-form-card {
+    border-radius: 12px;
+  }
+
+  #content-wrapper.container .admin-page-table-card .table-header,
+  #content-wrapper.container .org-page-table-card .table-header {
+    padding: 12px;
+    min-height: 52px;
+  }
+
+  #content-wrapper.container .admin-page-table-card .table-header h3,
+  #content-wrapper.container .org-page-table-card .table-header h3 {
+    font-size: 1rem;
+  }
+
+  #content-wrapper.container .leaderboard-header-section,
+  #content-wrapper.container .profile-header-cards {
+    gap: 14px;
+  }
+
+  #content-wrapper.container .dataTables_wrapper .dataTables_length,
+  #content-wrapper.container .dataTables_wrapper .dataTables_filter,
+  #content-wrapper.container .dataTables_wrapper .dataTables_info,
+  #content-wrapper.container .dataTables_wrapper .dataTables_paginate {
+    text-align: left !important;
+    width: 100%;
+    float: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #content-wrapper.container {
+    padding: 12px 10px 16px;
+  }
+
+  #content-wrapper.container .admin-page-title-content h1,
+  #content-wrapper.container .org-page-title-content h1 {
+    font-size: 1.35rem;
+  }
+}

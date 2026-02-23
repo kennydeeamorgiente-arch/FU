@@ -1,0 +1,693 @@
+/* Mobile Responsive Styles for Organization Pages */
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active,
+.sidebar-overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* Mobile devices (phones, up to 768px) */
+@media screen and (max-width: 768px) {
+  /* Sidebar toggle button - make sure it's visible */
+  .sidebar-toggle {
+    display: block !important; /* Show on mobile */
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure header-left is visible */
+  .header-left {
+    display: flex !important;
+    align-items: center;
+    gap: 15px;
+  }
+
+  /* Sidebar close button */
+  .sidebar-close {
+    display: block !important; /* Show on mobile */
+  }
+
+  /* Sidebar header */
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 40px;
+  }
+
+  .sidebar .logo {
+    margin-bottom: 0;
+  }
+
+  /* Sidebar - hidden by default on mobile */
+  .sidebar {
+    position: fixed;
+    left: -280px; /* Hidden off-screen */
+    transition: left 0.3s ease;
+    z-index: 1001; /* Above overlay */
+    width: 280px; /* Slightly wider on mobile */
+    height: 100vh;
+    top: 0;
+  }
+
+  .sidebar.active,
+  .sidebar.show {
+    left: 0; /* Slide in */
+  }
+
+  /* Main content - full width on mobile */
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Container adjustments */
+  .container {
+    width: 100%;
+    padding: 20px 15px;
+    row-gap: 20px;
+  }
+
+  /* Header - make it wrap */
+  header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 5vh;
+    padding: 10px 15px;
+  }
+
+  header .title {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  header .title h2 {
+    font-size: 1.2em;
+  }
+
+  /* Navigation - wrap items */
+  nav {
+    width: 100%;
+    order: 3;
+    margin-top: 10px;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav ul li {
+    display: inline-block;
+    margin: 5px 10px;
+  }
+
+  nav ul li a {
+    font-size: 0.9em;
+    padding: 5px 10px;
+  }
+
+  /* Profile settings - wrap */
+  .profile-settings {
+    order: 2;
+    margin-left: auto;
+  }
+
+  /* Profile container - full width on mobile */
+  .profile-container {
+    width: 80%;
+    right: 10px;
+    top: 50px;
+  }
+
+  /* Notification container - full width on mobile */
+  .notification-container {
+    width: 90%;
+    right: 5%;
+    max-width: none;
+  }
+
+  /* Cards and activity section - stack vertically */
+  .cards-and-activity {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cards {
+    width: 100%;
+  }
+
+  /* Log activity section - stack content */
+  .log-activity {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .log-activity .left {
+    padding-right: 0;
+  }
+
+  .log-activity .right {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .log-activity .right button {
+    width: 100%;
+  }
+
+  /* Event table - make scrollable */
+  .event-org-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .event-org-table table {
+    min-width: 600px;
+  }
+
+  /* Table header - stack on mobile */
+  .table-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .table-header h3 {
+    font-size: 1em;
+    width: 100%;
+  }
+
+  .table-filter {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .table-filter input {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .table-filter.date-filter {
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .table-filter.date-filter .date-filter-label {
+    width: 100%;
+    font-size: 0.78rem;
+  }
+
+  .table-filter.date-filter .date-filter-input-wrap {
+    width: 100%;
+    max-width: none;
+  }
+
+  /* Form container - full width */
+  .form-container {
+    width: 100%;
+  }
+
+  .proposal-form {
+    width: 100%;
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .form-input {
+    width: 100%;
+  }
+
+  .form-input input,
+  .form-input select,
+  .form-input textarea {
+    width: 100%;
+  }
+
+  /* Group collaborator - stack */
+  .group-collaborator {
+    grid-template-columns: 1fr;
+  }
+
+  /* Budget table - scrollable */
+  #budgetTable {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  #budgetTable thead,
+  #budgetTable tbody,
+  #budgetTable tr {
+    display: block;
+  }
+
+  #budgetTable th,
+  #budgetTable td {
+    display: inline-block;
+    min-width: 100px;
+  }
+
+  /* Modal - full width on mobile */
+  .modal-content {
+    min-width: 95%;
+    max-width: 95%;
+    margin: 10px;
+  }
+
+  .modal-body {
+    width: 100%;
+    padding: 15px;
+    height: 70vh;
+  }
+
+  .modal-header {
+    padding: 15px;
+    flex-wrap: wrap;
+  }
+
+  .modal-header h3 {
+    font-size: 1.1em;
+  }
+
+  /* Profile page - responsive */
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .profile-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-name h1 {
+    font-size: 1.5em;
+  }
+
+  .profile-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .event-org-table .org-info-container {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  /* Leaderboard header section */
+  .leaderboard-header-section {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .leaderboard-org-info {
+    flex: 0 0 100%;
+    min-width: 100%;
+    flex-direction: row;
+    padding: 20px;
+  }
+
+  .leaderboard-org-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .leaderboard-org-name h2 {
+    font-size: 1.5em;
+  }
+
+  .leaderboard-ranking-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+  }
+
+  /* Leaderboard header section - mobile */
+  .leaderboard-org-info {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .leaderboard-org-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+  }
+
+  .leaderboard-org-name h2 {
+    font-size: 1.3em;
+  }
+
+  /* Title events */
+  .title-events h1 {
+    font-size: 1.5em;
+  }
+
+  /* DataTables wrapper - responsive */
+  .dataTables_wrapper {
+    overflow-x: auto;
+  }
+
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px;
+  }
+
+  .dataTables_wrapper .dataTables_length select,
+  .dataTables_wrapper .dataTables_filter input {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* Action buttons - wrap */
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+
+  .action-btn {
+    min-width: 35px;
+    height: 35px;
+    font-size: 0.9em;
+  }
+}
+
+/* Small mobile devices (up to 480px) */
+@media screen and (max-width: 480px) {
+  .container {
+    padding: 15px 10px;
+  }
+
+  header {
+    padding: 8px 10px;
+  }
+
+  nav ul li {
+    margin: 3px 5px;
+  }
+
+  nav ul li a {
+    font-size: 0.8em;
+    padding: 3px 8px;
+  }
+
+  .title-events h1 {
+    font-size: 1.2em;
+  }
+
+  .table-header h3 {
+    font-size: 0.9em;
+  }
+
+  .log-activity {
+    padding: 15px;
+  }
+
+  .log-activity .left h3 {
+    font-size: 1.2em;
+  }
+
+  .log-activity .left h5 {
+    font-size: 0.9em;
+  }
+
+  .modal-content {
+    min-width: 98%;
+    max-width: 98%;
+    margin: 5px;
+  }
+
+  .modal-body {
+    padding: 10px;
+    height: 75vh;
+  }
+
+  .profile-container {
+    width: 90%;
+    right: 5%;
+  }
+
+  .notification-container {
+    width: 95%;
+    right: 2.5%;
+  }
+}
+
+/* Tablet devices (768px to 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    width: 98%;
+    padding: 30px 20px;
+  }
+
+  .cards-and-activity {
+    flex-wrap: wrap;
+  }
+
+  .proposal-form {
+    width: 80%;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modal-content {
+    min-width: 70%;
+  }
+
+  .modal-body {
+    width: 100%;
+  }
+}
+
+/* Global responsive hardening (applies to admin + organization views) */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+.main-content,
+#content-wrapper,
+.container,
+.dataTables_wrapper {
+  min-width: 0;
+}
+
+.event-org-table,
+.org-table-container,
+.leaderboard-table,
+.dataTables_wrapper {
+  max-width: 100%;
+}
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 100%;
+    padding: 24px 18px;
+    row-gap: 24px;
+  }
+
+  .cards-and-activity,
+  .leaderboard-header-section {
+    gap: 18px;
+  }
+
+  .log-activity {
+    padding: 22px 20px;
+  }
+
+  .admin-header,
+  header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .notification-container,
+  .user-dropdown {
+    right: 14px;
+  }
+
+  .org-table-container .mng-events-header,
+  .table-header {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .container {
+    padding: 20px 14px;
+    row-gap: 18px;
+  }
+
+  .admin-header h3,
+  #pageHeader {
+    font-size: 1rem;
+  }
+
+  .header-icons {
+    gap: 8px;
+  }
+
+  .profile-meta,
+  .profile-caret {
+    display: none;
+  }
+
+  .user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 3px;
+  }
+
+  .profile-avatar {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+  }
+
+  .cards-and-activity,
+  .leaderboard-header-section {
+    flex-direction: column;
+  }
+
+  .leaderboard-org-info,
+  .leaderboard-ranking-card {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .proposal-form,
+  .log-event-form {
+    width: 100%;
+  }
+
+  .table-filter,
+  .org-table-container .table-filter {
+    width: 100%;
+  }
+
+  .table-filter .leaderboard-filter-select,
+  .org-table-container .table-filter .leaderboard-filter-select {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .event-org-table,
+  .org-table-container,
+  .leaderboard-table,
+  #myEventTable_wrapper,
+  #org-leaderboard-table_wrapper,
+  #admin-leaderboard-table_wrapper,
+  #manage-events-table_wrapper,
+  #users-table_wrapper,
+  #organizations-table_wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .event-org-table table,
+  .org-table,
+  #manage-events-table,
+  #users-table,
+  #admin-leaderboard-table,
+  #org-leaderboard-table,
+  #myEventTable {
+    min-width: 760px;
+  }
+
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    float: none !important;
+    text-align: left !important;
+    width: 100%;
+  }
+
+  .dataTables_wrapper .dataTables_filter {
+    margin-top: 8px;
+  }
+
+  .dataTables_wrapper .dataTables_filter label {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    width: 100% !important;
+    max-width: none;
+    margin-left: 0 !important;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    margin-top: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .admin-header,
+  header {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .notification-container,
+  .user-dropdown {
+    width: calc(100vw - 20px);
+    right: 10px;
+    left: auto;
+  }
+
+  .table-header {
+    padding: 12px;
+  }
+
+  .table-header h3 {
+    font-size: 0.92rem;
+  }
+
+  .proposal-form,
+  .log-event-form {
+    padding: 14px;
+  }
+}
+

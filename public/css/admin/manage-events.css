@@ -1,0 +1,138 @@
+.mng-events-header {
+  background-color: #8b0000;
+  color: #fafafa;
+  padding: 10px;
+}
+
+
+.org-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.org-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.org-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.org-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.org-domain {
+  font-size: 0.8rem;
+  color: #6d6d6d;
+}
+
+#manage-events-table td:nth-child(4) {
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  transition: color 0.2s, background-color 0.2s;
+  border-radius: 4px;
+}
+
+/* Make icons white when row is hovered */
+#manage-events-table tbody tr:hover .action-btn {
+  color: #666;
+}
+
+#manage-events-table tbody tr:hover .action-btn i {
+  color: #666;
+}
+
+.action-btn:hover {
+  background-color: #fff;
+}
+
+.action-btn:hover i {
+  color: #8b0000;
+}
+
+/* Override row hover when button is hovered - icon should be maroon */
+#manage-events-table tbody tr:hover .action-btn:hover i {
+  color: #8b0000;
+}
+
+/* Keep manage events look aligned with organization-side table style */
+#manage-events-table tbody tr:hover {
+  background-color: #fff6f6;
+}
+
+#manage-events-table tbody tr:hover td {
+  color: #333;
+}
+
+/* DataTables Search Box Styling */
+.dataTables_wrapper .dataTables_filter {
+  float: right;
+  text-align: right;
+  margin-bottom: 15px;
+  margin-top: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  margin-left: 0.5em;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 250px;
+  transition: border-color 0.3s ease;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+  outline: none;
+  border-color: #8b0000;
+  box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.1);
+}
+
+.dataTables_wrapper .dataTables_filter label {
+  font-weight: 500;
+  color: #333;
+}
+
+.dataTables_wrapper .dataTables_length {
+  margin-bottom: 15px;
+  margin-top: 10px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin: 0 5px;
+}

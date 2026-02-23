@@ -1,0 +1,16 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Runtime and generated files
+/build/
+/writable/
+
+# Local tooling and OS files
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+
+# Intentionally not ignored:
+# .env

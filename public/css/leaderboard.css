@@ -1,0 +1,317 @@
+/* Leaderboard Header Section: Logo, Name, and Ranking */
+.leaderboard-header-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 25px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 30px auto;
+}
+
+.leaderboard-org-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  flex: 0 0 calc(60% - 12.5px);
+  min-width: 300px;
+  padding: 25px 30px;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 180px;
+}
+
+.leaderboard-org-info:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.leaderboard-org-logo {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fafafa;
+  position: relative;
+  z-index: 1;
+}
+
+.leaderboard-org-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+
+.leaderboard-org-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8B0000;
+  font-size: 2em;
+}
+
+.leaderboard-org-name {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.leaderboard-org-name h2 {
+  margin: 0;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-ranking-card {
+  flex: 1;
+  min-width: 280px;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.leaderboard-ranking-card .card {
+  width: 100%;
+  flex: 1;
+}
+
+.leaderboard-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 50vh;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FAFAFA 0%, #FFFFFF 100%);
+  box-shadow: 0 4px 15px rgba(139, 0, 0, 0.15);
+  overflow-y: auto;
+  border: 1px solid rgba(139, 0, 0, 0.1);
+}
+
+.leaderboard-table h3 {
+  text-align: left;
+  align-self: start;
+  margin-bottom: 15px;
+}
+.leaderboard-table table {
+  border: 1px solid rgba(139, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.08);
+}
+
+.leaderboard-table table thead {
+  background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
+}
+
+.leaderboard-table table th {
+  padding: 15px;
+  text-overflow: ellipsis;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.leaderboard-table table td {
+  padding: 12px 15px;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid rgba(139, 0, 0, 0.1);
+}
+
+.leaderboard-table tr:nth-child(even) {
+  background-color: #FAFAFA;
+}
+
+.leaderboard-table tr:nth-child(odd) {
+  background-color: #FFFFFF;
+}
+
+/* ADMIN DASHBOARD */
+.org-table-container .mng-events-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.org-table-container .mng-events-header h2 {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.table-filter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.table-filter .leaderboard-filter-select {
+  min-width: 170px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #7a1d1d;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-filter .leaderboard-filter-select:focus {
+  outline: none;
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+}
+
+.org-table-container .table-filter .leaderboard-filter-select {
+  border: 1px solid #b43d3d;
+  background-color: #ffffff;
+  color: #5b2020;
+}
+
+.org-table-container .table-filter .leaderboard-filter-select:focus {
+  border-color: #8b0000;
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.15);
+}
+
+#org-leaderboard-table tbody tr,
+#admin-leaderboard-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#org-leaderboard-table tbody tr:hover td,
+#admin-leaderboard-table tbody tr:hover td {
+  background-color: #8b0000;
+  color: #fafafa;
+}
+
+.leaderboard-table table tr:hover td {
+  background-color: #8b0000;
+  color: #fafafa;
+  cursor: pointer;
+}
+
+/* ===== Modern leaderboard table wrappers (admin + organization) ===== */
+.admin-leaderboard-toolbar-grid {
+  grid-template-columns: 1.9fr 1fr auto;
+}
+
+.admin-page-toolbar-card .admin-leaderboard-toolbar-grid .admin-toolbar-select,
+.admin-page-toolbar-card .admin-leaderboard-toolbar-grid .leaderboard-filter-select {
+  min-width: 170px;
+}
+
+.admin-page-table-card #admin-leaderboard-table,
+.org-page-table-card #org-leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.admin-page-table-card #admin-leaderboard-table thead th,
+.org-page-table-card #org-leaderboard-table thead th {
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: none;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 12px 14px;
+}
+
+.admin-page-table-card #admin-leaderboard-table tbody td,
+.org-page-table-card #org-leaderboard-table tbody td {
+  border-bottom: 1px solid #edf2f7;
+  color: #1e293b;
+  padding: 12px 14px;
+}
+
+.admin-page-table-card #admin-leaderboard-table tbody tr,
+.org-page-table-card #org-leaderboard-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-page-table-card #admin-leaderboard-table tbody tr:hover td,
+.org-page-table-card #org-leaderboard-table tbody tr:hover td {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.admin-page-table-card #admin-leaderboard-table_wrapper,
+.org-page-table-card #org-leaderboard-table_wrapper {
+  padding: 12px 14px;
+}
+
+.admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_filter {
+  display: none;
+}
+
+.admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_paginate .paginate_button,
+.org-page-table-card #org-leaderboard-table_wrapper .dataTables_paginate .paginate_button {
+  border: 1px solid #d0d7e2 !important;
+  border-radius: 8px !important;
+  padding: 0.3em 0.7em !important;
+  background: #fff !important;
+  color: #334155 !important;
+  margin-left: 6px;
+}
+
+.admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_paginate .paginate_button.current,
+.admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_paginate .paginate_button:hover,
+.org-page-table-card #org-leaderboard-table_wrapper .dataTables_paginate .paginate_button.current,
+.org-page-table-card #org-leaderboard-table_wrapper .dataTables_paginate .paginate_button:hover {
+  background: #8b0000 !important;
+  color: #fff !important;
+  border-color: #8b0000 !important;
+}
+
+.admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_length select,
+.admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_filter input,
+.org-page-table-card #org-leaderboard-table_wrapper .dataTables_length select,
+.org-page-table-card #org-leaderboard-table_wrapper .dataTables_filter input {
+  border: 1px solid #c8d1dd;
+  border-radius: 8px;
+  padding: 6px 9px;
+  color: #0f172a;
+}
+
+@media (max-width: 1024px) {
+  .admin-leaderboard-toolbar-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-leaderboard-toolbar-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,118 @@
+/* EVENTS MODAL */
+
+.event-overview{
+  width: 50vw;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  display:block;
+
+}
+
+.event-overview h4{
+  margin: 10px;
+}
+.event-table{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  width: 55vw;
+  padding: 20px;
+  overflow-y: scroll;
+  height: 75vh;
+  border-radius: 10px;
+  box-shadow: 0px 6px 44px -5px rgba(0,0,0,0.37);
+}
+/* .event-table tr:hover td {
+  background-color: #8b0000;
+  color: white; 
+  cursor: pointer;
+} */
+.event-table h3{
+  text-align: left;
+  align-self: start;
+  margin-bottom: 15px;
+}
+.event-table table{
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  border-collapse: collapse;
+  gap: 0;
+  width: 100%;
+}
+.event-table table th, .event-table table td{
+  padding: 10px;
+  margin: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+.event-table tr:nth-child(even){
+  background-color: #FAFAFA;
+}
+.table-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.table-filter{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 8px;
+}
+.table-filter button{
+  background-color: #8B0000;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.table-filter button:hover{
+  color: white;
+  background-color: #A60000;;
+  cursor: pointer;
+}
+
+.event-details{
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  min-height: 30vh;
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+.overview{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 1em;
+  row-gap: 1.5em;
+}
+.history-details{
+  width: 100%;  
+  border-radius: 8px;
+  border: 1px solid #CCCCCC;
+}
+.history-details td , .history-details th{
+  padding: 15px;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+.history-details tr:nth-child(even){
+  background-color: #FAFAFA;
+}
+
+table input{
+  text-align: center;
+}
+.files div{
+  display: inline;
+}
+.files div i{
+  display: inline;
+}
+.files div h5{
+display: inline;
+}
+
