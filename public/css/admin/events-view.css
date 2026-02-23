@@ -224,14 +224,28 @@
   align-self: flex-end;
   column-gap: 1vw;
   margin-bottom: 10px;
+  flex-wrap: wrap;
+  row-gap: 10px;
 }
 .response-buttons button{
-  width: 7vw;
-  height: 3.5vh;
+  min-width: 160px;
+  min-height: 44px;
+  padding: 10px 16px;
   border-radius: 8px;
   background-color: #8B0000;
   color: #FAFAFA;
   border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.response-buttons button h5{
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
 }
 .remarks-buttons{
   display: flex;
@@ -242,18 +256,33 @@
   margin-bottom: 10px;
 }
 .remarks-buttons button{
-  width: 7vw;
-  height: 3.5vh;
+  min-width: 120px;
+  min-height: 42px;
+  padding: 10px 14px;
   border-radius: 8px;
   background-color: #8B0000;
   color: #FAFAFA;
   border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 
 .response-buttons button:hover{
   cursor: pointer;
   background-color: #700000;
+}
+
+@media screen and (max-width: 767px) {
+  .response-buttons {
+    justify-content: stretch;
+  }
+
+  .response-buttons button,
+  .remarks-buttons button {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .files {

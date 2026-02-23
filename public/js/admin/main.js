@@ -41,10 +41,15 @@ $(document).ready(function () {
   $("#pageHeader").text(headerText);
   
   // Load notifications from API
-  loadNotifications();
+  loadNotifications(true);
   
-  // REMOVED: Auto-refresh causing loading loop
-  // setInterval(loadNotifications, 30000);
+  // Refresh notifications periodically to keep DB-based timestamps and ordering current.
+  if (window.__adminNotificationRefreshTimer) {
+    clearInterval(window.__adminNotificationRefreshTimer);
+  }
+  window.__adminNotificationRefreshTimer = setInterval(function () {
+    loadNotifications();
+  }, 30000);
   
   // Close dropdowns when clicking outside
   $(document).on("click", function (e) {
@@ -67,9 +72,15 @@ $(document).ready(function () {
 
 // Store notifications globally for unread count calculation
 let currentNotifications = [];
+let notificationsRequestInFlight = false;
 
 // Load notifications from API
-function loadNotifications() {
+function loadNotifications(forceRefresh = false) {
+  if (notificationsRequestInFlight && !forceRefresh) {
+    return;
+  }
+
+  notificationsRequestInFlight = true;
   let baseUrl = window.location.pathname.includes('/admin/') ? '/admin' : '/organization';
   
   console.log('Loading notifications from:', baseUrl + '/notifications');
@@ -83,6 +94,7 @@ function loadNotifications() {
       console.log('Notification API response:', response);
       if (response.status === 'success') {
         let notifications = response.data || response.notifications || [];
+        notifications = sortNotificationsNewestFirst(notifications);
         console.log('Parsed notifications:', notifications);
         console.log('Number of notifications:', notifications.length);
         currentNotifications = notifications; // Store for unread count
@@ -94,13 +106,36 @@ function loadNotifications() {
         currentNotifications = [];
         updateUnreadCount();
       }
+      notificationsRequestInFlight = false;
     },
     error: function(xhr, status, error) {
       console.error('Error loading notifications:', error, xhr);
       console.error('Status:', status, 'Response:', xhr.responseText);
       currentNotifications = [];
       updateUnreadCount();
+      notificationsRequestInFlight = false;
     }
+  });
+}
+
+function sortNotificationsNewestFirst(notifications) {
+  if (!Array.isArray(notifications)) {
+    return [];
+  }
+
+  return [...notifications].sort(function (a, b) {
+    const timeA = parseNotificationTimestampMs(a);
+    const timeB = parseNotificationTimestampMs(b);
+    const safeA = Number.isNaN(timeA) ? 0 : timeA;
+    const safeB = Number.isNaN(timeB) ? 0 : timeB;
+
+    if (safeA === safeB) {
+      const eventA = Number(a && a.event_id) || 0;
+      const eventB = Number(b && b.event_id) || 0;
+      return eventB - eventA;
+    }
+
+    return safeB - safeA;
   });
 }
 
@@ -168,7 +203,7 @@ function renderNotifications(notifications) {
   notifications.forEach(function(notif) {
     let notifId = notif.notification_id || notif.event_id;
     let isRead = seenNotifications[notifId] || false;
-    let timeAgo = getTimeAgo(notif.created_at);
+    let timeAgo = getTimeAgo(notif);
     
     // Highlight unseen notifications
     let highlightStyle = isRead ? '' : 'background: #E3F2FD; border-left: 3px solid #2196F3; font-weight: bold;';
@@ -271,38 +306,85 @@ function handleOrganizationNotificationClick(eventId, notificationType) {
   });
 }
 
+// Parse notification timestamps consistently (handles UTC SQL timestamps safely)
+function parseNotificationTimestampMs(notificationOrDate) {
+  if (notificationOrDate && typeof notificationOrDate === "object") {
+    const unixSeconds = Number(notificationOrDate.created_at_unix);
+    if (Number.isFinite(unixSeconds) && unixSeconds > 0) {
+      return unixSeconds * 1000;
+    }
+
+    if (notificationOrDate.created_at_iso) {
+      const isoMs = Date.parse(notificationOrDate.created_at_iso);
+      if (!Number.isNaN(isoMs)) {
+        return isoMs;
+      }
+    }
+  }
+
+  const rawDate =
+    notificationOrDate && typeof notificationOrDate === "object"
+      ? notificationOrDate.created_at
+      : notificationOrDate;
+
+  if (!rawDate) {
+    return NaN;
+  }
+
+  const rawString = String(rawDate).trim();
+  if (!rawString) {
+    return NaN;
+  }
+
+  // SQL DATETIME from backend has no timezone. Treat it as UTC.
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(rawString)) {
+    const utcMs = Date.parse(rawString.replace(" ", "T") + "Z");
+    if (!Number.isNaN(utcMs)) {
+      return utcMs;
+    }
+  }
+
+  return Date.parse(rawString);
+}
+
 // Get time ago string
-function getTimeAgo(dateString) {
-  // Parse the date string properly
-  let date = new Date(dateString);
-  let now = new Date();
-  
-  // Check if date is valid
-  if (isNaN(date.getTime())) {
-    return 'Unknown time';
+function getTimeAgo(notificationOrDate) {
+  const timestampMs = parseNotificationTimestampMs(notificationOrDate);
+  if (Number.isNaN(timestampMs)) {
+    return "Unknown time";
   }
-  
-  let diffInSeconds = Math.floor((now - date) / 1000);
-  
-  // Handle negative time (future dates)
+
+  let diffInSeconds = Math.floor((Date.now() - timestampMs) / 1000);
+
+  // Handle slight client/server clock drift.
   if (diffInSeconds < 0) {
-    diffInSeconds = Math.abs(diffInSeconds);
+    if (Math.abs(diffInSeconds) <= 30) {
+      diffInSeconds = 0;
+    } else {
+      return "Just now";
+    }
   }
-  
+
   if (diffInSeconds < 60) {
-    return 'Just now';
-  } else if (diffInSeconds < 3600) {
-    let minutes = Math.floor(diffInSeconds / 60);
-    return minutes + ' minute' + (minutes > 1 ? 's' : '') + ' ago';
-  } else if (diffInSeconds < 86400) {
-    let hours = Math.floor(diffInSeconds / 3600);
-    return hours + ' hour' + (hours > 1 ? 's' : '') + ' ago';
-  } else if (diffInSeconds < 604800) {
-    let days = Math.floor(diffInSeconds / 86400);
-    return days + ' day' + (days > 1 ? 's' : '') + ' ago';
-  } else {
-    return date.toLocaleDateString();
+    return "Just now";
   }
+
+  if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return minutes + " minute" + (minutes > 1 ? "s" : "") + " ago";
+  }
+
+  if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return hours + " hour" + (hours > 1 ? "s" : "") + " ago";
+  }
+
+  if (diffInSeconds < 604800) {
+    const days = Math.floor(diffInSeconds / 86400);
+    return days + " day" + (days > 1 ? "s" : "") + " ago";
+  }
+
+  return new Date(timestampMs).toLocaleString();
 }
 
 // Escape HTML to prevent XSS

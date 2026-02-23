@@ -11,6 +11,8 @@ class NotificationModel extends Model
     protected $eventsModel;
     protected $usersModel;
     protected $eventHistoryModel;
+    protected $utcTimezone;
+    protected $accessLevelNameCache = [];
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class NotificationModel extends Model
         $this->eventsModel = model("EventsModel");
         $this->usersModel = model("UserModel");
         $this->eventHistoryModel = model("EventsHistoryModel");
+        $this->utcTimezone = new \DateTimeZone('UTC');
     }
 
     /**
@@ -379,6 +382,22 @@ class NotificationModel extends Model
 
             log_message('debug', "NotificationModel: Found " . count($pendingEvents) . " pending events for access_id: {$accessId} (ACCESS LEVEL ITERATION)");
 
+            // Exclude events that were already acted on by the same access level.
+            // This prevents stale "requires your approval" notifications for levels that already processed the event.
+            $processedByLevelRows = $this->eventHistoryModel
+                ->select('events_history.event_id')
+                ->join('users', 'users.user_id = events_history.user_id', 'inner')
+                ->where('users.access_id', $accessId)
+                ->whereIn('events_history.status_id', [6, 7, 8]) // Rejected, Revision, Approved
+                ->groupBy('events_history.event_id')
+                ->findAll();
+
+            $processedEventLookup = [];
+            foreach ($processedByLevelRows as $row) {
+                $processedEventLookup[(int) ($row['event_id'] ?? 0)] = true;
+            }
+            log_message('debug', "NotificationModel: Processed events at access_id {$accessId}: " . count($processedEventLookup));
+
             // Debug: Log the current_access_id of found events to verify access level iteration
             if (count($pendingEvents) > 0) {
                 $accessLevels = array_count_values(array_column($pendingEvents, 'current_access_id'));
@@ -392,9 +411,10 @@ class NotificationModel extends Model
                     continue; // Skip if access level doesn't match
                 }
 
-                // DEBUG: Check if this is event 96
-                if ($event['event_id'] == 96) {
-                    log_message('debug', "NotificationModel: DEBUG - Processing event 96 for notification creation!");
+                // If this access level has already taken action on this event, do not show it again.
+                $eventId = (int) ($event['event_id'] ?? 0);
+                if (isset($processedEventLookup[$eventId])) {
+                    continue;
                 }
 
                 // Get the most recent history entry for this event to get the correct timestamp
@@ -414,14 +434,9 @@ class NotificationModel extends Model
                     $type = 'event_submission';
                 } else {
                     // Higher levels - event was approved by previous level, now needs this level's approval
-                    $prevLevel = $accessId - 1;
-                    $message = "Event '{$event['event_name']}' has been approved by the {$event['access_name']} and now requires your approval.";
+                    $previousAccessName = $this->resolveAccessLevelName((int) $accessId - 1);
+                    $message = "Event '{$event['event_name']}' was approved by {$previousAccessName} and now requires your approval.";
                     $type = 'event_approval';
-                }
-
-                // DEBUG: Check if notification is being created for event 96
-                if ($event['event_id'] == 96) {
-                    log_message('debug', "NotificationModel: DEBUG - Creating notification for event 96: {$message}");
                 }
 
                 // Use history timestamp if available, otherwise use event creation time
@@ -446,9 +461,18 @@ class NotificationModel extends Model
             log_message('debug', "NotificationModel: Added " . count($pendingEvents) . " admin notifications for access_id: {$accessId} (ACCESS LEVEL ITERATION)");
         }
 
-        // Sort by created_at descending
+        // Sort by created_at descending (deterministic tie-break by event_id).
         usort($notifications, function ($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
+            $timeA = strtotime((string) ($a['created_at'] ?? '')) ?: 0;
+            $timeB = strtotime((string) ($b['created_at'] ?? '')) ?: 0;
+
+            if ($timeA === $timeB) {
+                $eventA = (int) ($a['event_id'] ?? 0);
+                $eventB = (int) ($b['event_id'] ?? 0);
+                return $eventB <=> $eventA;
+            }
+
+            return $timeB <=> $timeA;
         });
 
         // Remove duplicates based on notification_id
@@ -470,6 +494,22 @@ class NotificationModel extends Model
             log_message('debug', "NotificationModel: Notification types: " . json_encode($types));
         }
 
+        $uniqueNotifications = $this->attachTimestampMetadata($uniqueNotifications);
+
+        // Final sort using normalized Unix timestamp metadata for consistent newest-first rendering.
+        usort($uniqueNotifications, function ($a, $b) {
+            $timeA = (int) ($a['created_at_unix'] ?? 0);
+            $timeB = (int) ($b['created_at_unix'] ?? 0);
+
+            if ($timeA === $timeB) {
+                $eventA = (int) ($a['event_id'] ?? 0);
+                $eventB = (int) ($b['event_id'] ?? 0);
+                return $eventB <=> $eventA;
+            }
+
+            return $timeB <=> $timeA;
+        });
+
         if ($limit) {
             $uniqueNotifications = array_slice($uniqueNotifications, 0, $limit);
         }
@@ -480,6 +520,84 @@ class NotificationModel extends Model
         }
 
         return $uniqueNotifications;
+    }
+
+    /**
+     * Resolve access level display name once and cache it.
+     */
+    private function resolveAccessLevelName(int $accessId): string
+    {
+        if ($accessId <= 0) {
+            return 'the previous level';
+        }
+
+        if (isset($this->accessLevelNameCache[$accessId])) {
+            return $this->accessLevelNameCache[$accessId];
+        }
+
+        $row = $this->db->table('access_level')
+            ->select('access_name')
+            ->where('access_id', $accessId)
+            ->get()
+            ->getRowArray();
+
+        $name = $row['access_name'] ?? ('Level ' . $accessId);
+        $this->accessLevelNameCache[$accessId] = $name;
+
+        return $name;
+    }
+
+    /**
+     * Add timezone-safe timestamp fields for frontend relative-time rendering.
+     * - created_at_iso: ISO8601 UTC (e.g. 2026-02-24T03:10:00+00:00)
+     * - created_at_unix: Unix timestamp seconds (UTC-based)
+     */
+    private function attachTimestampMetadata(array $notifications): array
+    {
+        foreach ($notifications as &$notification) {
+            $parsedDate = $this->parseNotificationDate($notification['created_at'] ?? null);
+            if ($parsedDate !== null) {
+                $notification['created_at_iso'] = $parsedDate->format('c');
+                $notification['created_at_unix'] = $parsedDate->getTimestamp();
+            } else {
+                $notification['created_at_iso'] = null;
+                $notification['created_at_unix'] = null;
+            }
+        }
+        unset($notification);
+
+        return $notifications;
+    }
+
+    /**
+     * Parse SQL datetime safely as UTC to avoid client-side timezone drift.
+     */
+    private function parseNotificationDate($value): ?\DateTimeImmutable
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        try {
+            if (is_numeric($value)) {
+                return (new \DateTimeImmutable('@' . (int) $value))->setTimezone($this->utcTimezone);
+            }
+
+            $dateString = trim((string) $value);
+            if ($dateString === '') {
+                return null;
+            }
+
+            // SQL DATETIME (no timezone) is stored in UTC in this app.
+            if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $dateString) === 1) {
+                return new \DateTimeImmutable($dateString, $this->utcTimezone);
+            }
+
+            return (new \DateTimeImmutable($dateString, $this->utcTimezone))->setTimezone($this->utcTimezone);
+        } catch (\Exception $e) {
+            log_message('warning', 'NotificationModel: Failed to parse notification datetime "' . (string) $value . '": ' . $e->getMessage());
+            return null;
+        }
     }
 
     /**

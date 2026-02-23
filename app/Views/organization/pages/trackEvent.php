@@ -47,15 +47,4 @@ $org_id = $session->get("org_id");
     </section>
 </div>
 
-<!-- Modal for Actions -->
-<div id="orgModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modalTitle">Event Action</h3>
-      <span class="modal-close">&times;</span>
-    </div>
-    <div class="modal-body" id="modalBody">
-
-    </div>
-  </div>
-</div>
+<!-- Modal is provided globally in app/Views/main.php -->

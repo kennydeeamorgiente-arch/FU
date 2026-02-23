@@ -534,13 +534,20 @@ $(document).ready(function () {
   let approvalInProgress = false;
   let lastProcessedEventId = null; // Track last processed event to prevent duplicates
 
+  function resetResponseState() {
+    $("#orgModal .response-remarks").hide().removeClass("active");
+    $("#orgModal .response-buttons button").removeClass("active");
+    $("#orgModal #remarks").val("").attr("required", false);
+    responseType = "";
+  }
+
   // Remove ALL existing handlers to prevent duplicates
   $(document).off("click", ".response-buttons button");
   $(document).off("click", "#btn-accept");
   $(document).off("click", "#btn-reject");
   $(document).off("click", "#btn-revision");
-  $(document).off("click", "#btn-submit");
-  $(document).off("click", "#btn-cancel");
+  $(document).off("click", "#orgModal #btn-submit");
+  $(document).off("click", "#orgModal #btn-cancel");
 
   // Remove ALL modal-specific handlers
   $(document).off("click", "#orgModal .response-buttons button");
@@ -549,269 +556,156 @@ $(document).ready(function () {
   $(document).off("click", "#orgModal #btn-revision");
   $(document).off("click", "#orgModal #btn-submit");
   $(document).off("click", "#orgModal #btn-cancel");
-
-  // Test if submit button exists when modal loads
-  setTimeout(function () {
-    let submitButton = $("#btn-submit");
-    let approveButton = $("#btn-accept");
-    let rejectButton = $("#btn-reject");
-    let revisionButton = $("#btn-revision");
-
-    console.log("=== FINAL BUTTON CHECK ===");
-    console.log("Submit button found:", submitButton.length > 0 ? "YES" : "NO");
-    console.log(
-      "Approve button found:",
-      approveButton.length > 0 ? "YES" : "NO",
-    );
-    console.log("Reject button found:", rejectButton.length > 0 ? "YES" : "NO");
-    console.log(
-      "Revision button found:",
-      revisionButton.length > 0 ? "YES" : "NO",
+  // Approval action handlers
+  $(document).on("click", "#orgModal .response-buttons button", function (e) {
+    const buttonId = $(this).attr("id");
+    const event_id = Number($(this).data("id")) || Number($("#orgModal #btn-submit").data("id"));
+    const user_id = Number($(this).data("user")) || Number($("#orgModal #btn-submit").data("user"));
+    const event_name = String(
+      $(this).data("name") || $("#orgModal #btn-submit").data("name") || "this event",
     );
 
-    if (submitButton.length > 0) {
-      // Add IMMEDIATE direct click test - no delays
-      submitButton.on("click", function (e) {
-        console.log("🔥🔥🔥 FINAL CLICK - Submit button clicked!");
-        console.log("Event data:", {
-          id: $(this).data("id"),
-          name: $(this).data("name"),
-          user: $(this).data("user"),
-        });
-
-        // DIRECT AJAX CALL - bypass all other logic
-        let eventId = $(this).data("id");
-        let eventName = $(this).data("name");
-        let userId = $(this).data("user");
-
-        console.log("🚀 FINAL AJAX CALL...");
-        $.ajax({
-          url: BASE_URL + "admin/update-events",
-          method: "POST",
-          data: {
-            event_id: eventId,
-            remarks: "Approved via final call",
-            status_id: 8, // Approve
-            user_id: userId,
-            event_name: eventName,
-          },
-          dataType: "json",
-          success: function (response) {
-            console.log("✅ FINAL AJAX SUCCESS:", response);
-            if (response.status == "success") {
-              alert("Event approved successfully!");
-              $("#orgModal").removeClass("show");
-              location.reload();
-            }
-          },
-          error: function (xhr, status, error) {
-            console.log("❌ FINAL AJAX ERROR:", error);
-            alert("Error approving event. Please try again.");
-          },
-        });
-      });
+    if (approvalInProgress) {
+      return false;
     }
-  }, 2000); // Check after 2 seconds
 
-  // FINAL CLEAN HANDLERS - Bind only ONCE
-  $(document).on("click", ".response-buttons button", function (e) {
-    let buttonId = $(this).attr("id");
-    console.log("FINAL - Button clicked:", buttonId);
+    // Approve should execute immediately with confirmation.
+    if (buttonId === "btn-accept") {
+      if (!event_id || !user_id) {
+        alert("Error: Event or user context is missing.");
+        return false;
+      }
 
-    // Set response type
-    responseType = buttonId;
-    console.log("FINAL - Response type set to:", responseType);
-
-    // For revision/reject, show remarks and make required
-    if (buttonId === "btn-revision" || buttonId === "btn-reject") {
-      $(".response-remarks").show();
-      $("#remarks").attr("required", true);
-      $("#remarks").attr(
-        "placeholder",
-        "Remarks are required for Revision/Rejection...",
+      const confirmed = confirm(
+        `Approve "${event_name}" and move it to the next approval level?`,
       );
-      console.log("FINAL - Showing remarks for revision/reject");
-    } else if (buttonId === "btn-accept") {
-      $(".response-remarks").hide();
-      $("#remarks").attr("required", false);
-      console.log("FINAL - Hiding remarks for approve");
+      if (!confirmed) {
+        return false;
+      }
 
-      // AUTO-TRIGGER SUBMIT after approve - no need to click submit button
-      setTimeout(function () {
-        console.log("🚀 AUTO-TRIGGERING SUBMIT after approve...");
-        $("#btn-submit").trigger("click");
-      }, 500);
+      updateEvent(event_id, "", 8, user_id, event_name);
+      return false;
     }
 
-    // Highlight active button
-    $(".response-buttons button").removeClass("active");
-    $(this).addClass("active");
+    // Return/Reject use one shared submit button with remarks.
+    if (buttonId === "btn-revision" || buttonId === "btn-reject") {
+      responseType = buttonId;
+      $("#orgModal .response-remarks").show().addClass("active");
+      $("#orgModal #remarks")
+        .attr("required", true)
+        .attr("placeholder", "Remarks are required for revision/rejection...");
+
+      $("#orgModal .response-buttons button").removeClass("active");
+      $(this).addClass("active");
+    }
   });
 
-  // Cancel button handler - FINAL
-  $(document).on("click", "#btn-cancel", function () {
-    $(".response-remarks").hide();
-    $(".response-buttons button").removeClass("active");
-    responseType = "";
-    $("#remarks").val("");
+  // Cancel button handler
+  $(document).on("click", "#orgModal #btn-cancel", function () {
+    if (approvalInProgress) {
+      return false;
+    }
+    resetResponseState();
   });
 
-  // Submit button handler - FINAL
-  $(document).on("click", "#btn-submit", function () {
-    console.log("FINAL - Submit button clicked");
-    console.log("FINAL - Current response type:", responseType);
+  // Submit button handler
+  $(document).on("click", "#orgModal #btn-submit", function () {
+    if (approvalInProgress) {
+      return false;
+    }
 
-    // Check if response type is selected
     if (!responseType) {
       alert(
-        "Please select an action first (Approve, Reject, or Return for Revision).",
+        "Please select Return for Revision or Reject first.",
       );
       return false;
     }
 
-    let remarks = $("#remarks").val();
+    const remarks = $("#orgModal #remarks").val();
     let status_id = 0;
-    let event_id = $(this).data("id");
-    let event_name = $(this).data("name");
-    let user_id = $(this).data("user");
+    const event_id = Number($(this).data("id"));
+    const event_name = String($(this).data("name") || "this event");
+    const user_id = Number($(this).data("user"));
 
-    console.log("FINAL - Submit data:", {
-      event_id,
-      remarks,
-      status_id,
-      user_id,
-      event_name,
-      responseType,
-    });
-
-    // Validate required data
     if (!event_id) {
-      console.error("FINAL - Event ID missing!");
       alert("Error: Event ID not found.");
       return false;
     }
 
     if (!user_id) {
-      console.error("FINAL - User ID missing!");
       alert("Error: User ID not found.");
       return false;
     }
 
-    // Determine status_id based on response type
     switch (responseType) {
       case "btn-revision":
         status_id = 7;
-        // Remarks required for revision
         if (!remarks || remarks.trim() === "") {
           alert("Please add remarks for revision.");
+          return false;
+        }
+        if (!confirm(`Return "${event_name}" for revision?`)) {
           return false;
         }
         break;
       case "btn-reject":
         status_id = 6;
-        // Remarks required for rejection
         if (!remarks || remarks.trim() === "") {
           alert("Please add remarks for rejection.");
           return false;
         }
-        break;
-      case "btn-accept":
-        status_id = 8;
-        // Remarks optional for approval, but show confirmation
-        let eventName = event_name || "this event";
-        if (!confirm(`Are you sure you want to approve "${eventName}"?`)) {
+        if (!confirm(`Reject "${event_name}"? This cannot be undone from this level.`)) {
           return false;
         }
-        // Set flag to prevent duplicate approvals
-        approvalInProgress = true;
-        $(this).prop("disabled", true);
         break;
       default:
-        console.log("FINAL - No response type selected, returning");
-        alert(
-          "Please select an action (Approve, Reject, or Return for Revision).",
-        );
+        alert("Please select Return for Revision or Reject.");
         return false;
     }
 
-    console.log("FINAL - Final data for update:", {
-      event_id,
-      remarks,
-      status_id,
-      user_id,
-      event_name,
-    });
-    console.log("🚀 FINAL - About to call updateEvent function...");
-
-    // Call update function directly
-    try {
-      updateEvent(event_id, remarks || "", status_id, user_id, event_name);
-      console.log("✅ FINAL - updateEvent function called successfully");
-    } catch (error) {
-      console.error("❌ FINAL - Error calling updateEvent:", error);
-      alert("Error updating event. Please check console for details.");
-    }
-
-    $(".response-remarks").removeClass("active");
-    $(".response-buttons button").removeClass("active");
-    responseType = "";
-    $("#remarks").val(""); // Clear remarks field
+    updateEvent(event_id, remarks || "", status_id, user_id, event_name || "");
   });
 
   function updateEvent(event_id, remarks, status_id, user_id, event_name) {
-    // Prevent duplicate calls for the same event
-    let eventKey = event_id + "_" + status_id;
-    if (lastProcessedEventId === eventKey && approvalInProgress) {
-      console.log("Duplicate updateEvent call prevented for event:", event_id);
+    const eventKey = event_id + "_" + status_id;
+    if (approvalInProgress && lastProcessedEventId === eventKey) {
+      return;
+    }
+    if (approvalInProgress) {
       return;
     }
 
-    // Mark as processing
+    approvalInProgress = true;
     lastProcessedEventId = eventKey;
+    const $actionButtons = $(
+      "#orgModal .response-buttons button, #orgModal #btn-submit, #orgModal #btn-cancel",
+    );
+    $actionButtons.prop("disabled", true);
 
-    console.log("🚀 Making AJAX call to update event...");
-    console.log("📤 URL:", BASE_URL + "admin/update-events");
-    console.log("📤 Data:", {
-      event_id,
-      remarks,
-      status_id,
-      user_id,
-      event_name,
-    });
-
-    // Test direct AJAX call without validation
     $.ajax({
       url: BASE_URL + "admin/update-events",
       method: "POST",
       data: {
         event_id: event_id,
-        remarks: remarks || "Test remarks",
-        status_id: 8, // Force approve for testing
-        user_id: user_id || 1, // Default user for testing
-        event_name: event_name || "Test Event",
+        remarks: remarks,
+        status_id: status_id,
+        user_id: user_id,
+        event_name: event_name,
       },
       dataType: "json",
-      beforeSend: function () {
-        console.log("📡 Sending AJAX request...");
-      },
       success: function (response) {
-        console.log("✅ AJAX Response received:", response);
         if (response.status == "success") {
-          console.log("✅ Update successful - showing alert");
-          // Show success message only once
-          alert("Event updated successfully!");
+          alert(response.already_processed ? (response.message || "Event already processed.") : "Event updated successfully!");
 
-          // Close modal if open
           if ($("#orgModal").hasClass("show")) {
             closeAdminEventModal();
           }
 
-          // Re-enable button and reset flags
+          resetResponseState();
           approvalInProgress = false;
-          lastProcessedEventId = null; // Reset to allow future updates
-          $(".response-buttons button").prop("disabled", false);
+          lastProcessedEventId = null;
+          $actionButtons.prop("disabled", false);
 
-          // Refresh the events table using AJAX only (no page reload)
           if ($(".admin-events").length > 0) {
             $("#manage-events-table tbody").empty();
             if ($.fn.DataTable.isDataTable(".admin-events")) {
@@ -819,32 +713,29 @@ $(document).ready(function () {
             }
             setTimeout(function () {
               getEvents();
+              if (typeof loadNotifications === "function") {
+                loadNotifications();
+              }
             }, 100);
           } else {
             window.location.href = BASE_URL + "admin/manage-events";
           }
         } else {
-          console.log("❌ Update failed:", response);
-          // Reset approval flag on error and re-enable button
           approvalInProgress = false;
           lastProcessedEventId = null;
-          $(".response-buttons button").prop("disabled", false);
-          alert("Error: " + response.message);
+          $actionButtons.prop("disabled", false);
+          alert("Error: " + (response.message || "Failed to update event."));
         }
       },
-      error: function (xhr, status, error) {
-        console.log("❌ AJAX Error:", { xhr, status, error });
-        // Reset approval flag on error and re-enable button
+      error: function () {
         approvalInProgress = false;
         lastProcessedEventId = null;
-        $(".response-buttons button").prop("disabled", false);
-        console.error("Update error:", error);
+        $actionButtons.prop("disabled", false);
         alert("Error updating event. Please try again.");
       },
     });
   }
-
-  // MODAL
+// MODAL
 
   $(document).on("click", "#btn-approve", function () {
     let eventId = $(this).data("id");

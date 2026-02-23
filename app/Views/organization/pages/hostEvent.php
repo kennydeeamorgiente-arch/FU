@@ -2,6 +2,19 @@
 $session = session();
 $org_id = $session->get("org_id");
 $user_id = $session->get("user_id");
+
+$latestFeedback = $latest_feedback ?? null;
+if (!$latestFeedback && !empty($event_history ?? [])) {
+  for ($idx = count($event_history) - 1; $idx >= 0; $idx--) {
+    $history = $event_history[$idx];
+    $statusId = (int) ($history['status_id'] ?? 0);
+    $remarks = trim((string) ($history['remarks'] ?? ''));
+    if (in_array($statusId, [6, 7], true) && $remarks !== '') {
+      $latestFeedback = $history;
+      break;
+    }
+  }
+}
 ?>
 
 <div class="container" id="event-form-container">
@@ -28,6 +41,26 @@ $user_id = $session->get("user_id");
       </div>
     </section>
   <?php endif; ?>
+
+  <?php if (isset($event) && $event && !empty($latestFeedback)): ?>
+    <?php
+    $feedbackStatusId = (int) ($latestFeedback['status_id'] ?? 0);
+    $feedbackStatusLabel = $feedbackStatusId === 6 ? 'Rejected' : 'Returned for Revision';
+    $feedbackBy = trim((string) ($latestFeedback['access_name'] ?? 'Approver'));
+    $feedbackDateRaw = $latestFeedback['created_at'] ?? null;
+    $feedbackDate = $feedbackDateRaw ? date("F j, Y g:i A", strtotime($feedbackDateRaw)) : '';
+    $feedbackRemarks = trim((string) ($latestFeedback['remarks'] ?? ''));
+    ?>
+    <section class="revision-feedback-card" role="note" aria-label="Latest reviewer remarks">
+      <h4><?= esc($feedbackStatusLabel) ?> Remarks</h4>
+      <p class="feedback-meta">
+        <?= esc($feedbackBy) ?>
+        <?= $feedbackDate ? " | " . esc($feedbackDate) : "" ?>
+      </p>
+      <blockquote><?= nl2br(esc($feedbackRemarks)) ?></blockquote>
+    </section>
+  <?php endif; ?>
+
   <section class="org-page-form-card">
     <div class="form-container">
     <?php if (isset($event) && $event): ?>
@@ -58,10 +91,10 @@ $user_id = $session->get("user_id");
 
         <div class="form-input">
           <label for="event-date">Event Date (Start - End)</label>
-          <div style="display: flex; align-items: center; gap: 5px;">
+          <div class="date-range-inputs">
             <input type="date" name="start-date" value="<?= $event['event_start_date'] ?>"
               onchange="generateEventSchedule()">
-            -
+            <span class="range-separator">-</span>
             <input type="date" name="end-date" value="<?= $event['event_end_date'] ?>" onchange="generateEventSchedule()">
           </div>
         </div>
@@ -129,9 +162,9 @@ $user_id = $session->get("user_id");
         </div>
         <div class="form-input">
           <label for="event-time">Time Range (Start - End)</label>
-          <div>
+          <div class="time-range-inputs">
             <input type="time" name="event-time-start" value="<?= $event['event_start_time'] ?>">
-            -
+            <span class="range-separator">-</span>
             <input type="time" name="event-time-end" value="<?= $event['event_end_time'] ?>">
           </div>
         </div>
@@ -321,9 +354,9 @@ $user_id = $session->get("user_id");
 
         <div class="form-input">
           <label for="event-date">Event Date (Start - End)</label>
-          <div>
+          <div class="date-range-inputs">
             <input type="date" name="start-date" style="width: 40%" required onchange="generateEventSchedule()">
-            -
+            <span class="range-separator">-</span>
             <input type="date" name="end-date" style="width: 40%" required onchange="generateEventSchedule()">
           </div>
         </div>
@@ -412,9 +445,9 @@ $user_id = $session->get("user_id");
 
         <div class="form-input">
           <label for="event-time">Time Range (Start - End)</label>
-          <div>
+          <div class="time-range-inputs">
             <input type="time" name="event-time-start" required>
-            <span>-</span>
+            <span class="range-separator">-</span>
             <input type="time" name="event-time-end" required>
           </div>
         </div>

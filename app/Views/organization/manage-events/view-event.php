@@ -1,6 +1,6 @@
 <div class="event-history" data-event-id="<?= $event['event_id'] ?>" data-status-id="<?= $event['status_id'] ?? 0 ?>">
 
-  <?php if (isset($event['status_id']) && $event['status_id'] == 7): ?>
+  <?php if (isset($event['status_id']) && in_array((int) $event['status_id'], [6, 7], true)): ?>
     <div style="margin-bottom: 20px; text-align: right;">
       <button id="edit-event-btn" class="edit-event-button" data-event-id="<?= $event['event_id'] ?>"
         style="padding: 10px 20px; background: #8b0000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">

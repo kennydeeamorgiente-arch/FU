@@ -207,6 +207,61 @@ form button:hover {
   box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.12);
 }
 
+.revision-feedback-card {
+  width: 100%;
+  max-width: 1200px;
+  border: 1px solid #f0d4d4;
+  border-left: 5px solid #8b0000;
+  border-radius: 12px;
+  background: #fff7f7;
+  padding: 14px 16px;
+  margin: 0 auto 14px;
+  box-sizing: border-box;
+}
+
+.revision-feedback-card h4 {
+  margin: 0 0 6px;
+  color: #7a1010;
+  font-size: 1rem;
+}
+
+.revision-feedback-card .feedback-meta {
+  margin: 0 0 8px;
+  color: #6b7280;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.revision-feedback-card blockquote {
+  margin: 0;
+  padding: 0;
+  color: #111827;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#event-form-container .date-range-inputs,
+#event-form-container .time-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#event-form-container .date-range-inputs input,
+#event-form-container .time-range-inputs input {
+  flex: 1 1 170px;
+  min-width: 140px;
+  width: auto !important;
+}
+
+#event-form-container .range-separator {
+  color: #64748b;
+  font-weight: 600;
+}
+
 /* Log EVENTS */
 .log-event-page .org-page-title-card {
   width: min(980px, 100%);
@@ -445,6 +500,40 @@ form button:hover {
 #orgModal .modal-content {
   max-width: 86% !important;
   width: 86% !important;
+}
+
+#orgModal #event-form-container {
+  width: 100%;
+  max-width: none;
+  padding: 0 24px 12px;
+  box-sizing: border-box;
+}
+
+#orgModal #event-form-container .org-page-title-card,
+#orgModal #event-form-container .org-page-form-card,
+#orgModal #event-form-container .revision-feedback-card {
+  max-width: none;
+  width: 100%;
+  margin: 0 0 14px;
+}
+
+#orgModal #event-form-container .org-page-form-card {
+  padding: 14px;
+}
+
+#orgModal #event-form-container .proposal-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+#orgModal #event-form-container .proposal-form .form-input {
+  min-width: 0;
+}
+
+#orgModal #event-form-container .proposal-form .form-input input,
+#orgModal #event-form-container .proposal-form .form-input select,
+#orgModal #event-form-container .proposal-form .form-input textarea {
+  max-width: 100%;
 }
 
 @media screen and (min-width: 1024px) {
@@ -774,6 +863,18 @@ form button:hover {
   align-items: center;   /* vertically align checkbox + text */
   gap: 8px;              /* space between checkbox and text */
 }
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-item label,
+.radio-item label {
+  margin: 0;
+}
+
 .checkbox-item:hover, .radio-item:hover{
   background-color: #cccccc;
 }
@@ -821,5 +922,21 @@ form button:hover {
   #budgetTable th,
   #budgetTable td {
     padding: 8px;
+  }
+
+  #orgModal #event-form-container {
+    padding: 0 10px 10px;
+  }
+
+  #orgModal #event-form-container .proposal-form {
+    grid-template-columns: 1fr;
+  }
+
+  #orgModal #event-form-container .proposal-form [style*="grid-column: span 2"] {
+    grid-column: span 1 !important;
+  }
+
+  #orgModal #event-form-container .proposal-form [style*="grid-row: span 2"] {
+    grid-row: auto !important;
   }
 }

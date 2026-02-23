@@ -149,7 +149,7 @@ function renderNotifications(notifications) {
   notifications.forEach(function(notif) {
     let notifId = notif.notification_id || notif.event_id;
     let isRead = seenNotifications[notifId] || false;
-    let timeAgo = getTimeAgo(notif.created_at);
+    let timeAgo = getTimeAgo(notif);
     
     // Highlight unseen notifications
     let highlightStyle = isRead ? '' : 'background: #E3F2FD; border-left: 3px solid #2196F3; font-weight: bold;';
@@ -334,20 +334,85 @@ function markAllNotificationsAsSeen() {
   updateUnreadCount();
 }
 
+// Parse notification timestamps consistently (handles UTC SQL timestamps safely)
+function parseNotificationTimestampMs(notificationOrDate) {
+  if (notificationOrDate && typeof notificationOrDate === "object") {
+    const unixSeconds = Number(notificationOrDate.created_at_unix);
+    if (Number.isFinite(unixSeconds) && unixSeconds > 0) {
+      return unixSeconds * 1000;
+    }
+
+    if (notificationOrDate.created_at_iso) {
+      const isoMs = Date.parse(notificationOrDate.created_at_iso);
+      if (!Number.isNaN(isoMs)) {
+        return isoMs;
+      }
+    }
+  }
+
+  const rawDate =
+    notificationOrDate && typeof notificationOrDate === "object"
+      ? notificationOrDate.created_at
+      : notificationOrDate;
+
+  if (!rawDate) {
+    return NaN;
+  }
+
+  const rawString = String(rawDate).trim();
+  if (!rawString) {
+    return NaN;
+  }
+
+  // SQL DATETIME from backend has no timezone. Treat it as UTC.
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(rawString)) {
+    const utcMs = Date.parse(rawString.replace(" ", "T") + "Z");
+    if (!Number.isNaN(utcMs)) {
+      return utcMs;
+    }
+  }
+
+  return Date.parse(rawString);
+}
+
 // Get time ago string
-function getTimeAgo(dateString) {
-  let date = new Date(dateString);
-  let now = new Date();
-  let diff = now - date;
-  let seconds = Math.floor(diff / 1000);
-  let minutes = Math.floor(seconds / 60);
-  let hours = Math.floor(minutes / 60);
-  let days = Math.floor(hours / 24);
-  
-  if (days > 0) return days + (days === 1 ? ' day' : ' days') + ' ago';
-  if (hours > 0) return hours + (hours === 1 ? ' hour' : ' hours') + ' ago';
-  if (minutes > 0) return minutes + (minutes === 1 ? ' minute' : ' minutes') + ' ago';
-  return 'Just now';
+function getTimeAgo(notificationOrDate) {
+  const timestampMs = parseNotificationTimestampMs(notificationOrDate);
+  if (Number.isNaN(timestampMs)) {
+    return "Unknown time";
+  }
+
+  let diffInSeconds = Math.floor((Date.now() - timestampMs) / 1000);
+
+  // Handle slight client/server clock drift.
+  if (diffInSeconds < 0) {
+    if (Math.abs(diffInSeconds) <= 30) {
+      diffInSeconds = 0;
+    } else {
+      return "Just now";
+    }
+  }
+
+  if (diffInSeconds < 60) {
+    return "Just now";
+  }
+
+  if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return minutes + " minute" + (minutes === 1 ? "" : "s") + " ago";
+  }
+
+  if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return hours + " hour" + (hours === 1 ? "" : "s") + " ago";
+  }
+
+  if (diffInSeconds < 604800) {
+    const days = Math.floor(diffInSeconds / 86400);
+    return days + " day" + (days === 1 ? "" : "s") + " ago";
+  }
+
+  return new Date(timestampMs).toLocaleString();
 }
 
 // Escape HTML to prevent XSS

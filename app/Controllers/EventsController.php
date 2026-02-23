@@ -293,26 +293,37 @@ class EventsController extends BaseController
         throw new PageNotFoundException("Unauthorized access");
       }
 
-      // Only allow editing if event status is "Returned For Revision" (status_id = 7)
-      if (!isset($event['status_id']) || $event['status_id'] != 7) {
+      // Only allow editing if event status is Rejected (6) or Returned For Revision (7)
+      if (!isset($event['status_id']) || !in_array((int) $event['status_id'], [6, 7], true)) {
         if ($isAjax) {
           return $this->response->setJSON([
             'status' => 'error',
-            'message' => "Event can only be edited when status is 'Returned For Revision'"
+            'message' => "Event can only be edited when status is 'Returned For Revision' or 'Rejected'"
           ])->setStatusCode(403);
         }
-        throw new PageNotFoundException("Event can only be edited when status is 'Returned For Revision'");
+        throw new PageNotFoundException("Event can only be edited when status is 'Returned For Revision' or 'Rejected'");
       }
 
       // Get event history
       $event_history = $this->event_history->getHistoryById($id) ?? [];
+      $latestFeedback = null;
+      for ($idx = count($event_history) - 1; $idx >= 0; $idx--) {
+        $history = $event_history[$idx];
+        $statusId = (int) ($history['status_id'] ?? 0);
+        $remarks = trim((string) ($history['remarks'] ?? ''));
+        if (in_array($statusId, [6, 7], true) && $remarks !== '') {
+          $latestFeedback = $history;
+          break;
+        }
+      }
 
       $data = [
         "event" => $event,
         "event_history" => $event_history,
         "budget_breakdown" => $this->event_budget->getBudgetById($id) ?? [],
         "event_collaborators" => $this->collab->getCollabById($id) ?? [],
-        "event_uploads" => $this->uploads->getUploadsByEvent($id) ?? []
+        "event_uploads" => $this->uploads->getUploadsByEvent($id) ?? [],
+        "latest_feedback" => $latestFeedback
       ];
 
       return view('/organization/pages/hostEvent', $data);
@@ -523,14 +534,6 @@ class EventsController extends BaseController
       ])->setStatusCode(404);
     }
 
-    // Only allow editing if event status is "Returned For Revision" (status_id = 7)
-    if (!isset($currentEvent['status_id']) || $currentEvent['status_id'] != 7) {
-      return $this->response->setJSON([
-        "status" => "error",
-        "message" => "Event can only be edited when status is 'Returned For Revision'"
-      ])->setStatusCode(403);
-    }
-
     // Verify the event belongs to the user's organization
     if ($currentEvent['org_id'] != $orgId) {
       return $this->response->setJSON([
@@ -540,7 +543,7 @@ class EventsController extends BaseController
     }
 
     // Only allow editing for rejected (6) or returned for revision (7) events
-    if ($currentEvent['status_id'] != 6 && $currentEvent['status_id'] != 7) {
+    if (!in_array((int) ($currentEvent['status_id'] ?? 0), [6, 7], true)) {
       return $this->response->setJSON([
         "status" => "error",
         "message" => "You can only edit events that are rejected or returned for revision"
@@ -746,17 +749,42 @@ class EventsController extends BaseController
 
   public function updateEvent()
   {
+    $session = session();
+    $sessionUserId = (int) ($session->get('user_id') ?? 0);
+    $sessionAccessId = (int) ($session->get('access_id') ?? 0);
 
-    $event_id = $this->request->getPost("event_id");
-    $remarks = $this->request->getPost("remarks");
-    $status_id = $this->request->getPost("status_id");
-    $user_id = $this->request->getPost("user_id");
+    $event_id = (int) $this->request->getPost("event_id");
+    $remarks = trim((string) $this->request->getPost("remarks"));
+    $status_id = (int) $this->request->getPost("status_id");
+    $user_id = (int) $this->request->getPost("user_id");
+
+    if ($sessionUserId <= 0 || $sessionAccessId <= 0) {
+      return $this->response->setJSON([
+        "status" => "error",
+        "message" => "Unauthorized access"
+      ])->setStatusCode(401);
+    }
 
     // Validate required fields
     if (!$event_id || !$status_id || !$user_id) {
       return $this->response->setJSON([
         "status" => "error",
         "message" => "Missing required fields: event_id, status_id, or user_id"
+      ])->setStatusCode(400);
+    }
+
+    // Protect against spoofed user_id from client payload.
+    if ($user_id !== $sessionUserId) {
+      return $this->response->setJSON([
+        "status" => "error",
+        "message" => "Invalid user context"
+      ])->setStatusCode(403);
+    }
+
+    if (!in_array($status_id, [6, 7, 8], true)) {
+      return $this->response->setJSON([
+        "status" => "error",
+        "message" => "Invalid status transition"
       ])->setStatusCode(400);
     }
 
@@ -768,11 +796,53 @@ class EventsController extends BaseController
       ])->setStatusCode(400);
     }
 
+    $event = $this->events->find($event_id);
+    if (!$event) {
+      return $this->response->setJSON([
+        "status" => "error",
+        "message" => "Event not found"
+      ])->setStatusCode(404);
+    }
+
+    // Event can only be acted on while pending/in-progress in admin workflow.
+    if (!in_array((int) ($event['status_id'] ?? 0), [1, 2], true)) {
+      return $this->response->setJSON([
+        "status" => "error",
+        "message" => "This event has already been processed."
+      ])->setStatusCode(409);
+    }
+
+    // Only the currently assigned access level can act on the event.
+    if ((int) ($event['current_access_id'] ?? 0) !== $sessionAccessId) {
+      return $this->response->setJSON([
+        "status" => "error",
+        "message" => "This event is no longer assigned to your access level."
+      ])->setStatusCode(409);
+    }
+
+    // Idempotency: if this access level already acted, do not generate duplicate history/actions.
+    $existingLevelAction = $this->event_history
+      ->select('events_history.status_id, events_history.created_at')
+      ->join('users', 'users.user_id = events_history.user_id', 'inner')
+      ->where('events_history.event_id', $event_id)
+      ->where('users.access_id', $sessionAccessId)
+      ->whereIn('events_history.status_id', [6, 7, 8])
+      ->orderBy('events_history.created_at', 'DESC')
+      ->first();
+
+    if ($existingLevelAction) {
+      return $this->response->setJSON([
+        "status" => "success",
+        "already_processed" => true,
+        "message" => "Event already processed for this access level."
+      ]);
+    }
+
     // Log the data being saved for debugging
-    log_message('debug', "EventsController::updateEvent - Event ID: {$event_id}, Status ID: {$status_id}, User ID: {$user_id}, Remarks: " . substr($remarks, 0, 100));
+    log_message('debug', "EventsController::updateEvent - Event ID: {$event_id}, Status ID: {$status_id}, User ID: {$sessionUserId}, Remarks: " . substr($remarks, 0, 100));
 
     $data = [
-      "user_id" => $user_id,
+      "user_id" => $sessionUserId,
       "event_id" => $event_id,
       "remarks" => trim($remarks) ?: '', // Ensure remarks are trimmed and not null
       "status_id" => $status_id
@@ -785,14 +855,10 @@ class EventsController extends BaseController
       log_message('debug', "EventsController::updateEvent - History record inserted successfully with ID: {$inserted}");
     } else {
       log_message('error', "EventsController::updateEvent - Failed to insert history record. Errors: " . json_encode($this->event_history->errors()));
-    }
-
-    $event = $this->events->find($event_id);
-    if (!$event) {
       return $this->response->setJSON([
         "status" => "error",
-        "message" => "Event not found"
-      ]);
+        "message" => "Failed to record event history."
+      ])->setStatusCode(500);
     }
 
     if ($status_id == 8) { // Approved

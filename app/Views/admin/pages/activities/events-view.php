@@ -36,7 +36,7 @@ $userAccessId = $session->get("access_id");
       <div>
         <h5>Proposed Date(s)</h5>
         <p><?= $event["event_start_date"] ?>
-          <?= $event["event_end_date"] == null ? "LOL" : "- " . $event["event_end_date"] ?>
+          <?= $event["event_end_date"] == null ? "" : "- " . $event["event_end_date"] ?>
         </p>
       </div>
       <!-- <div>
@@ -79,33 +79,23 @@ $userAccessId = $session->get("access_id");
     // 2. User hasn't already approved this event
     // 3. Event status is pending (1) or in-progress (2) through approval workflow
     // Note: status_id = 2 means event is progressing through approval (level 1 approved, now level 2 can approve)
-    
-    // DEBUG: Log all values to understand why submit button might not be showing
-    echo "<script>";
-    echo "console.log('DEBUG - ALL VALUES:');";
-    echo "console.log('  userAccessId:', " . json_encode($userAccessId ?? 'NULL') . ");";
-    echo "console.log('  userId:', " . json_encode($userId ?? 'NULL') . ");";
-    echo "console.log('  current_access_id:', " . json_encode($event['current_access_id'] ?? 'NULL') . ");";
-    echo "console.log('  status_id:', " . json_encode($event['status_id'] ?? 'NULL') . ");";
-    echo "console.log('  highest_access_level:', " . json_encode($event['highest_access_level'] ?? 'NULL') . ");";
-    echo "console.log('  user_has_approved:', " . json_encode($user_has_approved ? 'true' : 'false') . ");";
-    echo "console.log('  event array keys:', " . json_encode(array_keys($event)) . ");";
-    echo "console.log('DEBUG: FORCING BUTTONS TO SHOW FOR DEBUGGING');";
-
-    echo "</script>";
-
-
-    $canApprove = true; // FORCE SHOW FOR DEBUGGING
-    echo "console.log('DEBUG - Final canApprove:', " . json_encode($canApprove ? 'true' : 'false') . ");";
-    if ($userAccessId == $event['current_access_id'] && $event["status_id"] == 1): ?>
+    $canApprove = (
+      (int) $userAccessId === (int) ($event['current_access_id'] ?? 0) &&
+      in_array((int) ($event["status_id"] ?? 0), [1, 2], true) &&
+      !($user_has_approved ?? false)
+    );
+    if ($canApprove): ?>
       <div class="response-buttons">
-        <button id="btn-revision" data-id="<?= $event["event_id"] ?>">
+        <button id="btn-revision" data-id="<?= $event["event_id"] ?>" data-user="<?= $userId ?>"
+          data-name="<?= esc($event["event_name"], "attr") ?>">
           <h5>Return for Revision</h5>
         </button>
-        <button id="btn-reject" data-id="<?= $event["event_id"] ?>">
+        <button id="btn-reject" data-id="<?= $event["event_id"] ?>" data-user="<?= $userId ?>"
+          data-name="<?= esc($event["event_name"], "attr") ?>">
           <h5>Reject</h5>
         </button>
-        <button id="btn-accept" data-id="<?= $event["event_id"] ?>" data-user="<?= $userId ?>">
+        <button id="btn-accept" data-id="<?= $event["event_id"] ?>" data-user="<?= $userId ?>"
+          data-name="<?= esc($event["event_name"], "attr") ?>">
           <h5>Approve</h5>
         </button>
       </div>
@@ -115,7 +105,7 @@ $userAccessId = $session->get("access_id");
           placeholder="Add Remarks (Optional for Approval, Required for Revision/Rejection).."></textarea>
         <div class="remarks-buttons">
           <button id="btn-cancel" data-id="<?= $event["event_id"] ?>">Cancel</button>
-          <button id="btn-submit" data-id="<?= $event["event_id"] ?>" data-name="<?= $event["event_name"] ?>"
+          <button id="btn-submit" data-id="<?= $event["event_id"] ?>" data-name="<?= esc($event["event_name"], "attr") ?>"
             data-user="<?= $userId ?>">Submit</button>
         </div>
       </div>

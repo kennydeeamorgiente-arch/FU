@@ -107,12 +107,26 @@ class OrganizationController extends BaseController
       throw new PageNotFoundException("Event can only be edited when status is 'Returned For Revision' or 'Rejected'");
     }
 
+    $eventHistory = $this->event_history->getHistoryById($eventId) ?? [];
+    $latestFeedback = null;
+    for ($idx = count($eventHistory) - 1; $idx >= 0; $idx--) {
+      $history = $eventHistory[$idx];
+      $statusId = (int) ($history['status_id'] ?? 0);
+      $remarks = trim((string) ($history['remarks'] ?? ''));
+      if (in_array($statusId, [6, 7], true) && $remarks !== '') {
+        $latestFeedback = $history;
+        break;
+      }
+    }
+
     // Get related data using existing model properties
     $data = [
       "event" => $event,
+      "event_history" => $eventHistory,
       "budget_breakdown" => $this->event_budget->getBudgetById($eventId) ?? [],
       "event_collaborators" => $this->collab->getCollabById($eventId) ?? [],
-      "event_uploads" => $this->uploads->getUploadsByEvent($eventId) ?? []
+      "event_uploads" => $this->uploads->getUploadsByEvent($eventId) ?? [],
+      "latest_feedback" => $latestFeedback
     ];
 
     if ($this->request->isAJAX()) {
