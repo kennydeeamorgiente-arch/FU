@@ -399,14 +399,14 @@
   overflow: hidden;
 }
 
-#orgModal .modal-content {
+.sidebar[data-access-id]:not([data-access-id="0"]) ~ .main-content #orgModal .modal-content {
   width: calc(100% - 280px) !important;
   max-width: calc(100% - 280px) !important;
   margin-left: 240px !important;
 }
 
 @media screen and (min-width: 768px) {
-  #orgModal .modal-content {
+  .sidebar[data-access-id]:not([data-access-id="0"]) ~ .main-content #orgModal .modal-content {
     width: calc(100% - 300px) !important;
     max-width: calc(100% - 280px) !important;
     margin-left: 240px !important;
@@ -414,7 +414,7 @@
 }
 
 @media screen and (min-width: 1024px) {
-  #orgModal .modal-content {
+  .sidebar[data-access-id]:not([data-access-id="0"]) ~ .main-content #orgModal .modal-content {
     width: calc(100% - 300px) !important;
     max-width: 1200px !important;
     margin-left: 240px !important;
@@ -422,7 +422,7 @@
 }
 
 @media screen and (min-width: 1400px) {
-  #orgModal .modal-content {
+  .sidebar[data-access-id]:not([data-access-id="0"]) ~ .main-content #orgModal .modal-content {
     width: calc(100% - 300px) !important;
     max-width: 1400px !important;
     margin-left: 240px !important;
@@ -430,7 +430,7 @@
 }
 
 @media screen and (max-width: 767px) {
-  #orgModal .modal-content {
+  .sidebar[data-access-id]:not([data-access-id="0"]) ~ .main-content #orgModal .modal-content {
     width: 95% !important;
     max-width: 95% !important;
     margin-left: 0 !important;

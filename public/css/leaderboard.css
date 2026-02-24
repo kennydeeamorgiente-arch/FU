@@ -275,6 +275,10 @@
   display: none;
 }
 
+.admin-page-table-card #org-leaderboard-table_wrapper .dataTables_filter {
+  display: none;
+}
+
 .admin-page-table-card #admin-leaderboard-table_wrapper .dataTables_paginate .paginate_button,
 .org-page-table-card #org-leaderboard-table_wrapper .dataTables_paginate .paginate_button {
   border: 1px solid #d0d7e2 !important;

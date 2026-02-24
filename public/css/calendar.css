@@ -121,7 +121,7 @@
 }
 
 .admin-dashboard-bento .fc-daygrid-event {
-  background: linear-gradient(90deg, #8b0000 0%, #9a1b1b 100%);
+  background: linear-gradient(90deg, #8b0000 0%, #9a1b1b 100%); 
 }
 
 .admin-dashboard-bento .bento-focus h3,
@@ -159,7 +159,7 @@
   padding: 10px 12px;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(90deg, #8b0000 0%, #6b7280 100%);
+  background: linear-gradient(90deg, #8b0000 0%, #6b7280 100%); 
   cursor: pointer;
 }
 
@@ -178,7 +178,7 @@
   overflow-y: auto;
 }
 
-.admin-dashboard-bento #dashboard-upcoming-list li.empty {
+.admin-dashboard-bento #dashboard-upcoming-list li.empty {      
   color: #6b7280;
   font-size: 0.9rem;
 }
@@ -298,7 +298,7 @@
   width: 100%;
 }
 
-/* Ensure event information displays properly in modal */
+/* Ensure event information displays properly in modal */       
 .modal-body .events-wrapper {
   width: 100%;
   padding: 0;
@@ -507,4 +507,122 @@
 .response-buttons button:hover{
   cursor: pointer;
   background-color: #700000;
+}
+
+/* Add scrollable area for dashboard activity lists */
+#dashboard-incoming-list,
+#dashboard-pending-list {
+  max-height: 200px; /* Limit height to prevent expansion */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  padding-right: 5px; /* Add some padding for scrollbar */
+}
+
+/* Custom scrollbar styling for better look */
+#dashboard-incoming-list::-webkit-scrollbar,
+#dashboard-pending-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#dashboard-incoming-list::-webkit-scrollbar-track,
+#dashboard-pending-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#dashboard-incoming-list::-webkit-scrollbar-thumb,
+#dashboard-pending-list::-webkit-scrollbar-thumb {
+  background: #d8d8d8;
+  border-radius: 3px;
+}
+
+#dashboard-incoming-list::-webkit-scrollbar-thumb:hover,
+#dashboard-pending-list::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* Improved Dashboard Activity Feed */
+.admin-dashboard-bento .bento-activity-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .admin-dashboard-bento .bento-activity-groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.admin-dashboard-bento .activity-group h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #334155;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.admin-dashboard-bento .activity-group h4 i {
+  color: #8B0000;
+}
+
+.admin-dashboard-bento .bento-activity-item {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #cbd5e1; /* Default border color */
+  border-radius: 6px;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.admin-dashboard-bento .bento-activity-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+/* Incoming items styling - Theme Red */
+.admin-dashboard-bento .incoming-group .bento-activity-item {
+  border-left-color: #8B0000;
+}
+
+/* Pending items styling - Dark Gray (Waiting) */
+.admin-dashboard-bento .pending-group .bento-activity-item {
+  border-left-color: #64748b;
+}
+
+.admin-dashboard-bento .bento-activity-item strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.admin-dashboard-bento .bento-activity-item span {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Empty state styling */
+.admin-dashboard-bento .activity-group li.empty {
+  padding: 20px;
+  text-align: center;
+  color: #94a3b8;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.admin-dashboard-bento .activity-group li.empty i {
+  margin-right: 8px;
 }

@@ -3,10 +3,6 @@
           <div class="admin-page-title-content">
             <h1>Organization Management</h1>
             <p>Create and maintain organization profiles, advisers, and status.</p>
-            <div class="admin-page-meta">
-              <span class="meta-pill">Directory</span>
-              <span class="meta-pill">Paginated</span>
-            </div>
           </div>
         </section>
 

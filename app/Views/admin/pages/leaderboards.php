@@ -3,10 +3,6 @@
     <div class="admin-page-title-content">
       <h1>Leaderboards</h1>
       <p>View current organization rankings and total points by period.</p>
-      <div class="admin-page-meta">
-        <span class="meta-pill">Ranking</span>
-        <span class="meta-pill">Paginated</span>
-      </div>
     </div>
   </section>
 
@@ -33,7 +29,7 @@
       </div>
     </div>
 
-    <table class="org-table" id="admin-leaderboard-table">
+    <table class="org-table clickable-rows" id="admin-leaderboard-table">
       <thead>
         <tr>
           <th>Rank</th>

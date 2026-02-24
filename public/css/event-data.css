@@ -49,19 +49,19 @@
 .event-table tr:nth-child(even){
   background-color: #FAFAFA;
 }
-.table-header{
+.event-table .table-header{
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
 }
-.table-filter{
+.event-table .table-filter{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   column-gap: 8px;
 }
-.table-filter button{
+.event-table .table-filter button{
   background-color: #8B0000;
   color: white;
   padding: 10px;
@@ -69,7 +69,7 @@
   border: none;
 }
 
-.table-filter button:hover{
+.event-table .table-filter button:hover{
   color: white;
   background-color: #A60000;;
   cursor: pointer;

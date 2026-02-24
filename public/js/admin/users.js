@@ -104,6 +104,13 @@ $(document).ready(function () {
             .attr("data-id", user.user_id || "");
           editBtn.append($("<i>").addClass("fa-solid fa-pen-to-square"));
           actionsCell.append(editBtn);
+
+          let viewBtn = $("<button>")
+            .addClass("action-btn view-btn")
+            .attr("data-id", user.user_id || "");
+          viewBtn.append($("<i>").addClass("fa-solid fa-magnifying-glass"));
+          actionsCell.append(viewBtn);
+
           let deleteBtn = $("<button>")
             .addClass("action-btn delete-btn")
             .attr("data-id", user.user_id || "");
@@ -151,17 +158,48 @@ $(document).ready(function () {
   });
   }
 
+  // View button click event
+  $(document).on("click", ".view-btn", function (e) {
+    e.stopPropagation();
+    let btn = $(this).closest('.view-btn');
+    let userId = btn.attr("data-id");
+    
+    if (!userId || userId === "undefined" || userId === "null") {
+        console.error("Invalid User ID for view:", userId);
+        alert("Error: Invalid User ID.");
+        return;
+    }
+
+    openUserQuickView(userId);
+  });
+
   // Edit button click event
-  $(document).on("click", ".edit-btn", function () {
+  $(document).on("click", ".edit-btn", function (e) {
+    e.stopPropagation();
     let userId = $(this).attr("data-id");
+    
+    if (!userId || userId === "undefined" || userId === "null") {
+        console.error("Invalid User ID for edit:", userId);
+        alert("Error: Invalid User ID.");
+        return;
+    }
+
     $("#modalTitle").text("Edit User");
     $("#modalBody").load(BASE_URL + "admin/modify-user/user-edit/" + userId);
     $("#orgModal").addClass("show");
   });
 
   // Delete button click event
-  $(document).on("click", ".delete-btn", function () {
+  $(document).on("click", ".delete-btn", function (e) {
+    e.stopPropagation();
     let userId = $(this).attr("data-id");
+    
+    if (!userId || userId === "undefined" || userId === "null") {
+        console.error("Invalid User ID for delete:", userId);
+        alert("Error: Invalid User ID.");
+        return;
+    }
+
     $("#modalTitle").text("Delete User");
     $("#modalBody").load(BASE_URL + "admin/modify-user/user-delete/" + userId);
     $("#orgModal").addClass("show");
@@ -179,15 +217,7 @@ $(document).ready(function () {
     $("#orgModal").removeClass("show");
   });
 
-  $(document).on("click", "#users-table tbody tr", function (e) {
-    if ($(e.target).closest(".action-btn, .dataTables_empty").length > 0) {
-      return;
-    }
-    const userId = $(this).attr("data-user-id");
-    if (userId) {
-      openUserQuickView(userId);
-    }
-  });
+
 
   // Cancel button - use event delegation since button is loaded dynamically
   $(document).on("click", "#modalCancelAddBtn", function () {

@@ -55,6 +55,25 @@
   min-height: 58px;
   gap: 10px;
   padding: 14px 16px;
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  border-bottom: 1px solid rgba(139, 0, 0, 0.3) !important;
+  box-shadow:
+    inset 0 -1px 0 rgba(139, 0, 0, 0.3),
+    0 10px 16px -12px rgba(139, 0, 0, 0.62);
+}
+
+#content-wrapper.container .admin-page-table-card .table-header::before,
+#content-wrapper.container .org-page-table-card .table-header::before {
+  display: none !important;
+  content: none !important;
+}
+
+#content-wrapper.container .admin-page-table-card .table-header::after,
+#content-wrapper.container .org-page-table-card .table-header::after {
+  display: none !important;
+  content: none !important;
 }
 
 #content-wrapper.container .admin-page-table-card .table-header h3,

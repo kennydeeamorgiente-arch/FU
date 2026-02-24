@@ -3,11 +3,6 @@
     <div class="org-page-title-content">
       <h1>Log My Event</h1>
       <p class="log-event-subtitle">Submit documentation and financial report links for completed events.</p>
-    </div>
-    <div class="org-page-meta">
-      <span class="meta-pill">Status 3</span>
-      <span class="meta-pill">Moves to Status 4</span>
-    </div>
   </section>
   <section class="org-page-form-card">
     <div class="form-container">

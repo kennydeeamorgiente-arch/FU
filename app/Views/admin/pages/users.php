@@ -3,10 +3,6 @@
           <div class="admin-page-title-content">
             <h1>User Management</h1>
             <p>Create users, assign roles, and manage account access.</p>
-            <div class="admin-page-meta">
-              <span class="meta-pill">Role Based</span>
-              <span class="meta-pill">Paginated</span>
-            </div>
           </div>
         </section>
 

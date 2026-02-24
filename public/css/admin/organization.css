@@ -7,7 +7,7 @@
   width: 95%;
   margin: 0 auto;
   min-height: auto;
-  row-gap: 5vh;
+  row-gap: 20px;
   padding: 30px;
 }
 
@@ -32,25 +32,6 @@
   margin: 8px 0 0;
   color: #64748b;
   font-size: 1rem;
-}
-
-.admin-page-meta {
-  margin-top: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.meta-pill {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #d0d7e2;
-  background: #f8fafc;
-  color: #334155;
-  border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 0.82rem;
-  font-weight: 500;
 }
 
 .admin-page-toolbar-card {
@@ -413,10 +394,22 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.org-table tbody tr {
+  cursor: default;
+}
+
+.org-table.clickable-rows tbody tr {
+  cursor: pointer;
+}
+
 .org-table tbody tr:hover {
   background-color: #fff6f6;
   color: #333;
-  cursor: pointer;
+}
+
+/* Hide back button when inside a modal */
+.modal-body .back-to-org {
+  display: none;
 }
 
 .org-table tbody tr:hover td {
@@ -1157,4 +1150,113 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
+}
+
+/* Dashboard Activity Items Styling */
+.bento-activity-item {
+  width: 100%;
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bento-activity-item:hover {
+  background: #f8fafc;
+  border-color: #8b0000;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
+}
+
+.bento-activity-item strong {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.bento-activity-item span {
+  color: #64748b;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.bento-activity-groups .activity-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bento-activity-groups .activity-group li.empty {
+  padding: 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-style: italic;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bento-activity-groups .activity-group li.empty .fa-spinner {
+  font-size: 0.9rem;
+  color: #8b0000;
+}
+
+.bento-activity-groups .activity-group h4 {
+  margin: 0 0 12px 0;
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.bento-upcoming-item {
+  width: 100%;
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bento-upcoming-item:hover {
+  background: #f8fafc;
+  border-color: #8b0000;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
+}
+
+.bento-upcoming-item strong {
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.bento-upcoming-item span {
+  color: #64748b;
+  font-size: 0.8rem;
+  line-height: 1.2;
 }

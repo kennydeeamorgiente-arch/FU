@@ -3,10 +3,6 @@
         <div class="admin-page-title-content">
             <h1>Manage Events</h1>
             <p>Review event submissions and process approvals by stage.</p>
-            <div class="admin-page-meta">
-                <span class="meta-pill">Live Queue</span>
-                <span class="meta-pill">Paginated</span>
-            </div>
         </div>
     </section>
 

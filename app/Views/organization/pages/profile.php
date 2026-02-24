@@ -3,11 +3,6 @@
     <div class="org-page-title-content">
       <h1>Organization Profile</h1>
       <p>View your organization details, ranking, and engagement summary.</p>
-    </div>
-    <div class="org-page-meta">
-      <span class="meta-pill">Profile</span>
-      <span class="meta-pill">Read Only</span>
-    </div>
   </section>
 
   <div class="profile-header-cards">

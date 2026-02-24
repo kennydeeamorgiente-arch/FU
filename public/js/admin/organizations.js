@@ -15,15 +15,14 @@ $(document).ready(function () {
       return;
     }
 
-    $("#orgModal").removeClass("show");
-    $("#adminEventModal").removeClass("show");
-
-    $(".container").load(`${BASE_URL}admin/modify-organization/org-view/${orgId}`, function (response, status, xhr) {
+    modalTitle.text("Organization Details");
+    modalBody.load(`${BASE_URL}admin/modify-organization/org-view/${orgId}`, function (response, status, xhr) {
       if (status === "error") {
         console.error("Error loading organization:", xhr.status, xhr.statusText);
-        alert("Error loading organization details. Please try again.");
+        modalBody.html("<p class='text-danger text-center'>Error loading details.</p>");
       }
     });
+    modal.addClass("show");
   }
 
   function bindOrganizationToolbarFilters() {
@@ -70,8 +69,16 @@ $(document).ready(function () {
   });
 
   // Edit button click
-  $(document).on("click", ".edit-btn", function () {
+  $(document).on("click", ".edit-btn", function (e) {
+    e.stopPropagation();
     let orgId = $(this).attr("data-org");
+
+    if (!orgId || orgId === "undefined" || orgId === "null") {
+        console.error("Invalid Organization ID for edit:", orgId);
+        alert("Error: Invalid Organization ID.");
+        return;
+    }
+
     modalTitle.text("Edit Organization");
     modalBody.load(`modify-organization/org-edit/${orgId}`);
     modal.addClass("show");
@@ -81,9 +88,7 @@ $(document).ready(function () {
   $(document).on("click", "#organizations-table .view-btn", function (e) {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();
     
-    console.log("Organization view button clicked");
     let orgId = $(this).attr("data-org");
     
     if (!orgId || orgId === 'undefined' || orgId === 'null') {
@@ -92,24 +97,21 @@ $(document).ready(function () {
       return false;
     }
     
-    console.log("Loading organization view for ID:", orgId);
     openOrganizationDetails(orgId);
     return false;
   });
 
-  $(document).on("click", "#organizations-table tbody tr", function (e) {
-    if ($(e.target).closest(".action-btn, .dataTables_empty").length > 0) {
-      return;
-    }
-    const orgId = $(this).attr("data-org-id");
-    if (orgId) {
-      openOrganizationDetails(orgId);
-    }
-  });
-
   // Delete button click
-  $(document).on("click", ".delete-btn", function () {
+  $(document).on("click", ".delete-btn", function (e) {
+    e.stopPropagation();
     let orgId = $(this).attr("data-org");
+
+    if (!orgId || orgId === "undefined" || orgId === "null") {
+        console.error("Invalid Organization ID for delete:", orgId);
+        alert("Error: Invalid Organization ID.");
+        return;
+    }
+
     modalTitle.text("Delete Organization");
     modalBody.load(`modify-organization/org-delete/${orgId}`);
     modalConfirmBtn.text("Delete");

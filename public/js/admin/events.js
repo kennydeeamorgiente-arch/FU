@@ -12,7 +12,10 @@ $(document).ready(function () {
   }
 
   function openAdminEventModal(eventId) {
-    if (!eventId) return;
+    if (!eventId || eventId === "undefined" || eventId === "null") {
+      console.warn("Attempted to open modal with invalid event ID:", eventId);
+      return;
+    }
 
     var modal = $("#orgModal");
     if (modal.length > 0) {
@@ -66,9 +69,12 @@ $(document).ready(function () {
     }
   });
 
+  // Click handler for event rows
   $(document).on("click", "#manage-events-table .event-row", function () {
     let eventId = $(this).data("id");
-    openAdminEventModal(eventId);
+    if (eventId && eventId !== "undefined") {
+      openAdminEventModal(eventId);
+    }
   });
 
   // SessionStorage loading - for navigation from notifications
@@ -164,7 +170,7 @@ $(document).ready(function () {
   }
 
   function updateDashboardBento(events) {
-    const hasBento = $("#dashboard-upcoming-list").length > 0;
+    const hasBento = $("#dashboard-incoming-list").length > 0 || $("#dashboard-pending-list").length > 0;
     if (!hasBento || !Array.isArray(events)) return;
 
     const now = new Date();
@@ -228,29 +234,62 @@ $(document).ready(function () {
       $("#dashboard-focus-open").attr("data-id", "");
     }
 
-    const $upcomingList = $("#dashboard-upcoming-list");
-    $upcomingList.empty();
+    const $incomingList = $("#dashboard-incoming-list");
+    const $pendingList = $("#dashboard-pending-list");
+    
+    $incomingList.empty();
+    $pendingList.empty();
 
-    if (sorted.length === 0) {
-      $upcomingList.append('<li class="empty">No scheduled activities.</li>');
-      return;
+    const incomingEvents = sorted.filter(event => {
+      const eventDate = new Date(event.event_start_date || 0);
+      const now = new Date();
+      const daysUntilEvent = Math.ceil((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      return daysUntilEvent >= 0 && daysUntilEvent <= 7; // Next 7 days
+    });
+
+    const pendingEvents = sorted.filter(event => event.status_name === "Pending");
+
+    if (incomingEvents.length === 0) {
+      $incomingList.append('<li class="empty">No incoming activities.</li>');
+    } else {
+      incomingEvents.slice(0, 5).forEach((event) => {
+        const safeName = $("<div>").text(event.event_name || "Untitled Event").html();
+        const safeMeta = $("<div>")
+          .text(`${event.org_name || "Unknown Org"} | ${formatDateRange(event.event_start_date, event.event_end_date)}`)
+          .html();
+
+        $incomingList.append(`
+          <li>
+            <button type="button" class="bento-activity-item" data-id="${event.event_id}">
+              <strong>${safeName}</strong>
+              <span>${safeMeta}</span>
+            </button>
+          </li>
+        `);
+      });
     }
 
-    sorted.slice(0, 6).forEach((event) => {
-      const safeName = $("<div>").text(event.event_name || "Untitled Event").html();
-      const safeMeta = $("<div>")
-        .text(`${event.org_name || "Unknown Org"} | ${formatDateRange(event.event_start_date, event.event_end_date)}`)
-        .html();
+    if (pendingEvents.length === 0) {
+      $pendingList.append('<li class="empty">No pending activities.</li>');
+    } else {
+      pendingEvents.slice(0, 5).forEach((event) => {
+        const safeName = $("<div>").text(event.event_name || "Untitled Event").html();
+        const safeMeta = $("<div>")
+          .text(`${event.org_name || "Unknown Org"} | Submitted: ${new Date(event.created_at).toLocaleDateString()}`)
+          .html();
 
-      $upcomingList.append(`
-        <li>
-          <button type="button" class="bento-upcoming-item" data-id="${event.event_id}">
-            <strong>${safeName}</strong>
-            <span>${safeMeta}</span>
-          </button>
-        </li>
-      `);
-    });
+        $pendingList.append(`
+          <li>
+            <button type="button" class="bento-activity-item" data-id="${event.event_id}">
+              <strong>${safeName}</strong>
+              <span>${safeMeta}</span>
+            </button>
+          </li>
+        `);
+      });
+    }
+
+
   }
 
   function initCalendar() {
@@ -334,6 +373,13 @@ $(document).ready(function () {
 
   if (shouldLoadEventsData()) {
     getEvents();
+    
+    // Auto-refresh dashboard data every 30 seconds
+    setInterval(function() {
+      if (shouldLoadEventsData()) {
+        getEvents();
+      }
+    }, 30000);
   }
 
   $(document)
@@ -344,9 +390,9 @@ $(document).ready(function () {
       }
     });
 
-  $(document).on("click", "#dashboard-focus-open, .bento-upcoming-item", function () {
+  $(document).on("click", "#dashboard-focus-open, .bento-upcoming-item, .bento-activity-item", function () {
     const eventId = $(this).data("id");
-    if (eventId) {
+    if (eventId && eventId !== "undefined") {
       openAdminEventModal(eventId);
     }
   });

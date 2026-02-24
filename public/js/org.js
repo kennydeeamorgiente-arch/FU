@@ -224,12 +224,28 @@ $(document).ready(function () {
       return;
     }
 
-    const isOrgLeaderboard = row.closest("#org-leaderboard-table").length > 0;
-    const url = isOrgLeaderboard
-      ? `${BASE_URL}organization/profile/${orgId}`
-      : `${BASE_URL}admin/modify-organization/org-view/${orgId}`;
-
-    $("#content-wrapper").load(url);
+    // Open in modal instead of redirecting
+    // We can reuse the organization details modal logic if available or load into a generic modal
+    if ($("#orgModal").length > 0) {
+        $("#modalTitle").text("Organization Details");
+        $("#modalBody").load(`${BASE_URL}admin/modify-organization/org-view/${orgId}`);
+        $("#orgModal").addClass("show");
+    } else {
+        // Fallback if modal doesn't exist (e.g. org side might need different handling)
+        const isOrgLeaderboard = row.closest("#org-leaderboard-table").length > 0;
+        const url = isOrgLeaderboard
+        ? `${BASE_URL}organization/profile/${orgId}`
+        : `${BASE_URL}admin/modify-organization/org-view/${orgId}`;
+        
+        // For admin side, try to avoid full redirect/load if possible, but if modal missing, load in container
+        if (!isOrgLeaderboard) {
+             // Admin side fallback
+             $("#content-wrapper").load(url);
+        } else {
+             // Organization side might still want redirect/load
+             $("#content-wrapper").load(url);
+        }
+    }
   });
 
   let results = $(".search-result");
@@ -291,23 +307,31 @@ $(document).ready(function () {
     applyLeaderboardFilter(selectedFilter);
   });
 
-  // Admin leaderboard search (DataTable search)
-  $(document).on("input", "#admin-leaderboard-search-input", function () {
-    const table = $("#admin-leaderboard-table");
-    if (!table.length || !$.fn.DataTable.isDataTable("#admin-leaderboard-table")) {
+  // Shared leaderboard search (admin + organization)
+  $(document).on("input", "#admin-leaderboard-search-input, #org-leaderboard-search-input", function () {
+    const isAdminInput = $(this).attr("id") === "admin-leaderboard-search-input";
+    const tableSelector = isAdminInput ? "#admin-leaderboard-table" : "#org-leaderboard-table";
+    const table = $(tableSelector);
+
+    if (!table.length || !$.fn.DataTable.isDataTable(tableSelector)) {
       return;
     }
 
     table.DataTable().search($(this).val()).draw();
   });
 
-  // Admin leaderboard clear controls
-  $(document).on("click", "#admin-leaderboard-clear-btn", function () {
-    $("#admin-leaderboard-search-input").val("");
-    $("#admin-leaderboard-filter").val("annually").trigger("change");
+  // Shared leaderboard clear controls (admin + organization)
+  $(document).on("click", "#admin-leaderboard-clear-btn, #org-leaderboard-clear-btn", function () {
+    const isAdminClear = $(this).attr("id") === "admin-leaderboard-clear-btn";
+    const searchInputSelector = isAdminClear ? "#admin-leaderboard-search-input" : "#org-leaderboard-search-input";
+    const filterSelectSelector = isAdminClear ? "#admin-leaderboard-filter" : "#leaderboard-filter";
+    const tableSelector = isAdminClear ? "#admin-leaderboard-table" : "#org-leaderboard-table";
+    const table = $(tableSelector);
 
-    const table = $("#admin-leaderboard-table");
-    if (table.length && $.fn.DataTable.isDataTable("#admin-leaderboard-table")) {
+    $(searchInputSelector).val("");
+    $(filterSelectSelector).val("annually").trigger("change");
+
+    if (table.length && $.fn.DataTable.isDataTable(tableSelector)) {
       table.DataTable().search("").draw();
     }
   });

@@ -762,9 +762,24 @@ $(document).ready(function () {
     if ($("#demo").length > 0 && $("#track-events-tbody").length > 0) {
       console.log("Initializing date range picker...");
       const dateFilterInput = $("#demo");
+      const clearFilterButton = $("#track-events-clear-btn");
       dateFilterInput.prop("readonly", true).attr("inputmode", "none").attr("aria-readonly", "true");
       dateFilterInput.on("keydown paste drop", function (e) {
         e.preventDefault();
+      });
+
+      clearFilterButton.off("click.trackEventsDateClear").on("click.trackEventsDateClear", function () {
+        const picker = dateFilterInput.data("daterangepicker");
+        if (picker) {
+          picker.setStartDate(moment());
+          picker.setEndDate(moment());
+          picker.hide();
+        }
+
+        dateFilterInput.val("");
+        if (typeof window.getOrgEvents === "function") {
+          window.getOrgEvents();
+        }
       });
 
       // Ensure the filter field is never visually blank before interaction.
@@ -1133,6 +1148,12 @@ $(document).ready(function () {
     e.stopPropagation();
     let eventId = $(this).data("id");
     console.log(eventId);
+
+    if (!eventId || eventId === "undefined" || eventId === "null") {
+        console.error("Invalid Event ID for view:", eventId);
+        alert("Error: Invalid Event ID.");
+        return;
+    }
 
     // Update modal title
     $("#modalTitle").text("Event Details");

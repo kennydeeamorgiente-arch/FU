@@ -24,20 +24,12 @@ if (!$latestFeedback && !empty($event_history ?? [])) {
         <h1>Apply for an Event</h1>
         <p>Submit a new event proposal for the approval workflow.</p>
       </div>
-      <div class="org-page-meta">
-        <span class="meta-pill">New Submission</span>
-        <span class="meta-pill">Status Tracking</span>
-      </div>
     </section>
   <?php else: ?>
     <section class="org-page-title-card">
       <div class="org-page-title-content">
         <h1>Edit Event</h1>
         <p>Update your event details based on revision remarks.</p>
-      </div>
-      <div class="org-page-meta">
-        <span class="meta-pill">Revision</span>
-        <span class="meta-pill">Re-submit</span>
       </div>
     </section>
   <?php endif; ?>
@@ -170,7 +162,7 @@ if (!$latestFeedback && !empty($event_history ?? [])) {
         </div>
         <div class="form-input">
           <label for="event-name">Estimated No. of Participants</label>
-          <input type="text" name="event-participants" style="width: 30%;"
+          <input type="text" name="event-participants"
             value="<?= $event['number_of_participants'] ?>">
         </div>
         <div class="form-input">
@@ -355,9 +347,9 @@ if (!$latestFeedback && !empty($event_history ?? [])) {
         <div class="form-input">
           <label for="event-date">Event Date (Start - End)</label>
           <div class="date-range-inputs">
-            <input type="date" name="start-date" style="width: 40%" required onchange="generateEventSchedule()">
+            <input type="date" name="start-date" required onchange="generateEventSchedule()">
             <span class="range-separator">-</span>
-            <input type="date" name="end-date" style="width: 40%" required onchange="generateEventSchedule()">
+            <input type="date" name="end-date" required onchange="generateEventSchedule()">
           </div>
         </div>
 
@@ -453,7 +445,7 @@ if (!$latestFeedback && !empty($event_history ?? [])) {
         </div>
         <div class="form-input">
           <label for="event-name">Estimated No. of Participants</label>
-          <input type="text" name="event-participants" style="width: 30%;" required>
+          <input type="text" name="event-participants" required>
         </div>
         <div class="form-input">
           <label for="event-type">Event Type</label>

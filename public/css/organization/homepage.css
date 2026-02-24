@@ -117,7 +117,7 @@
   border: 1px solid #6d6d6d;
 }
 
-.table-header{
+.legacy-org-table-ui .table-header{
   background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
   color: #fafafa;
   padding: 20px 30px;
@@ -132,7 +132,7 @@
   overflow: hidden;
 }
 
-.table-header::before {
+.legacy-org-table-ui .table-header::before {
   content: '';
   position: absolute;
   top: 0;
@@ -143,7 +143,7 @@
   pointer-events: none;
 }
 
-.table-header h3 {
+.legacy-org-table-ui .table-header h3 {
   margin: 0;
   font-size: 1.3em;
   font-weight: 700;
@@ -153,18 +153,18 @@
   z-index: 1;
 }
 
-.table-filter {
+.legacy-org-table-ui .table-filter {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
 }
 
-.table-filter.date-filter {
+.legacy-org-table-ui .table-filter.date-filter {
   gap: 12px;
 }
 
-.table-filter.date-filter .date-filter-label {
+.legacy-org-table-ui .table-filter.date-filter .date-filter-label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -178,12 +178,12 @@
   z-index: 1;
 }
 
-.table-filter.date-filter .date-filter-input-wrap {
+.legacy-org-table-ui .table-filter.date-filter .date-filter-input-wrap {
   position: relative;
   width: min(360px, 100%);
 }
 
-.table-filter.date-filter .date-filter-input-wrap > i {
+.legacy-org-table-ui .table-filter.date-filter .date-filter-input-wrap > i {
   position: absolute;
   left: 13px;
   top: 50%;
@@ -193,7 +193,7 @@
   pointer-events: none;
 }
 
-.table-filter.date-filter .date-filter-input-wrap::after {
+.legacy-org-table-ui .table-filter.date-filter .date-filter-input-wrap::after {
   content: "\f078";
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
@@ -206,7 +206,7 @@
   pointer-events: none;
 }
 
-.table-filter button {
+.legacy-org-table-ui .table-filter button {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
   padding: 8px 16px;
@@ -218,7 +218,7 @@
   font-weight: 500;
 }
 
-.table-filter button:hover {
+.legacy-org-table-ui .table-filter button:hover {
   background-color: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-1px);
@@ -273,11 +273,11 @@
 }
 
 #myEventTable tbody tr:hover {
-  background-color: #fff6f6;
+  background-color: #f8fafc;
 }
 
 #myEventTable tbody tr:hover td {
-  color: #333;
+  color: #1e293b;
 }
 
 #myEventTable tbody tr:hover .action-btn,
@@ -304,14 +304,14 @@
   color: #A52A2A;
 }
 
-#org-leaderboard-table_wrapper {
+.legacy-org-table-ui #org-leaderboard-table_wrapper {
   padding: 20px;
 }
-#myEventTable_wrapper{
+.legacy-org-table-ui #myEventTable_wrapper{
   padding: 20px;
 }
 /* Date Range Picker Input */
-.table-filter.date-filter #demo {
+.legacy-org-table-ui .table-filter.date-filter #demo {
   padding: 10px 34px 10px 38px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -326,20 +326,20 @@
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.table-filter.date-filter #demo::placeholder {
+.legacy-org-table-ui .table-filter.date-filter #demo::placeholder {
   color: #7a7a7a;
   font-weight: 500;
   opacity: 1;
 }
 
-.table-filter.date-filter #demo:focus {
+.legacy-org-table-ui .table-filter.date-filter #demo:focus {
   outline: none;
   border-color: #8B0000;
   box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.18);
   transform: translateY(-1px);
 }
 
-.table-filter.date-filter #demo[readonly] {
+.legacy-org-table-ui .table-filter.date-filter #demo[readonly] {
   caret-color: transparent;
 }
 
@@ -495,8 +495,8 @@
   font-weight: bold;
 }
 /* Pagination - Active/Current State */
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled),
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled) * {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled),
+.legacy-org-table-ui .dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled) * {
     background-color: #A52A2A !important;
     border: 1px solid #A52A2A !important;
     border-radius: 4px !important;
@@ -504,59 +504,59 @@
 }
 
 /* Pagination - Hover State */
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) {
     background-color: #A52A2A !important;
     border: 1px solid #A52A2A !important;
     border-radius: 4px !important;
     color: white !important;
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) * {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_paginate .paginate_button:hover:not(.disabled):not(.current) * {
     color: white !important;
 }
 
 /* Pagination - Current Button Hover */
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover:not(.disabled),
-.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover:not(.disabled) * {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover:not(.disabled),
+.legacy-org-table-ui .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover:not(.disabled) * {
     background-color: #A52A2A !important;
     border: 1px solid #A52A2A !important;
     border-radius: 4px !important;
     color: white !important;
 }
 
-.dataTables_length{
+.legacy-org-table-ui .dataTables_length{
   margin-bottom: 25px;
 }
 
 /* DataTables Length and Filter Styling */
-.dataTables_wrapper .dataTables_length select {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_length select {
   padding: 5px 10px;
   border: 1px solid #A52A2A;
   border-radius: 4px;
   margin: 0 5px;
 }
 
-.dataTables_wrapper .dataTables_length select:focus {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_length select:focus {
   outline: none;
   border-color: #8B0000;
   box-shadow: 0 0 5px rgba(165, 42, 42, 0.3);
 }
 
-.dataTables_wrapper .dataTables_filter input {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_filter input {
   padding: 5px 10px;
   border: 1px solid #A52A2A;
   border-radius: 4px;
   margin-left: 10px;
 }
 
-.dataTables_wrapper .dataTables_filter input:focus {
+.legacy-org-table-ui .dataTables_wrapper .dataTables_filter input:focus {
   outline: none;
   border-color: #8B0000;
   box-shadow: 0 0 5px rgba(165, 42, 42, 0.3);
 }
 
 #myEventTable .event-row:hover{
-  background-color: #fff6f6;
+  background-color: #f8fafc;
   color: inherit;
 }
 
@@ -628,6 +628,64 @@
 
 .org-page-overview-card .card {
   min-height: 180px;
+}
+
+.admin-page-toolbar-card.org-page-toolbar-card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.org-page-toolbar-card .org-track-toolbar-grid {
+  grid-template-columns: minmax(260px, 1fr) auto;
+}
+
+.org-track-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.org-track-date-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.org-track-date-input-wrap {
+  position: relative;
+}
+
+.org-track-date-input-wrap > i {
+  color: #9aa4b2;
+}
+
+.org-track-date-input-wrap::after {
+  content: "\f078";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9aa4b2;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.org-track-date-input-wrap input {
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+.org-track-clear-btn {
+  min-width: 108px;
 }
 
 .org-page-table-card {
@@ -731,6 +789,16 @@
   border-radius: 8px;
   padding: 6px 9px;
   color: #0f172a;
+}
+
+@media (max-width: 900px) {
+  .org-page-toolbar-card .org-track-toolbar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .org-track-clear-btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
